@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 23:26:25 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/06 17:46:45 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/07 10:45:43 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ token_t *copy_of_list(token_t *original, int size)
 	copy = NULL;
 	if (original)
 	{
-		while (original && i <= size)
+		while (original && i < size)
 		{
 			ft_lstadd_back_token(&copy, init_token(original->value, original->type));
 			original = original->next;
@@ -90,15 +90,6 @@ token_t *tokens_of_one_command(token_t **token)
 	{
 		count_token = number_of_tokens_before_pipe(*token);
 		tokens_cmd = copy_of_list(*token ,count_token);
-		// while (tokens_cmd)
-		// {
-		// 	//printf("salam\n");
-		// 	printf("|%s|\n",tokens_cmd->value);
-		// 	tokens_cmd =tokens_cmd->next;
-		// }
-		// tokens_cmd = copy_of_list(*token ,count_token);
-
-	//	printf("%p\n",tokens_cmd);
 		while (*token  && i <= count_token)
 		{
 			*token = (*token)->next;
@@ -135,8 +126,6 @@ t_red	*init_red(int flg)
 	return (red);
 }
 
-
-
 t_list *init_lst()
 {
 	t_list		*lst;
@@ -146,43 +135,6 @@ t_list *init_lst()
 	lst->next = NULL;
 	return (lst);
 }
-// char	*tokens_cmd_to_string(token_t *token)
-// {
-// 	char	*buffer;
-
-// 	buffer = ft_strdup("");
-// 	if (token)
-// 	{
-// 		while (token)
-// 		{
-// 			buffer = ft_strjoin(buffer, token->value);
-// 			token = token->next;
-// 		}
-// 		buffer = ft_strjoin(buffer, "\0");
-// 	}
-// 	return (buffer);
-// }
-
-// void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
-// {
-// 	int		flag;
-// 	token_t	*cmd_arg;
-// 	token_t	*symb_fl;
-// 	token_t	*prev;
-
-// 	buffer = ft_strdup("");
-// 	if (token)
-// 	{
-// 		while (token)
-// 		{
-// 			buffer = ft_strjoin(buffer, token->value);
-// 			token = token->next;
-// 		}
-// 		buffer = ft_strjoin(buffer, "\0");
-// 	}
-// 	return (buffer);
-//}
-
 
 void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 {
@@ -256,16 +208,14 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 	}
 }
 
-
-
 t_command *insert_one_cmd(char *cmd_args, char *symb_file)
 {
 	int			i;
 	int			flag;
 	char		*file;
+	t_command	*new;
 	t_list		*lst_redir_in;
 	t_list		*lst_redir_out;
-	t_command	*new;
 
 	i = 0;
 	flag = -1;
@@ -274,7 +224,6 @@ t_command *insert_one_cmd(char *cmd_args, char *symb_file)
 	new->redir_in = malloc(sizeof(t_list));
 	lst_redir_in = NULL;
 	lst_redir_out = NULL;
-	//
 	if (cmd_args)
 	{
 		new->args = ft_split(cmd_args, ' ');
@@ -354,8 +303,8 @@ t_list *store_one_cmd(token_t **tokens, char *symb)
 		tokens_cmd = tokens_of_one_command(tokens);
 		while (tokens_cmd)
 		{
+
 			cmd_args_file(tokens_cmd, &cmd_args, &symb_file);
-			//printf("|%s|\n",((t_command *)ft_lstnew(insert_one_cmd(cmd_args, symb_file))->content)->cmd);
 			ft_lstadd_back(&lst, ft_lstnew(insert_one_cmd(cmd_args, symb_file)));
 			cmd_args = NULL;
 			symb_file = NULL;
@@ -623,9 +572,7 @@ t_list	*parser(char *line)
 	symb = "<>";
 	types = "<>| '\"$";
 	token = get_all_tokens(lexer, types);
-	//check_parsing_error((token));
+	check_parsing_error((token));
 	lst = store_one_cmd(&token, symb);
-
-
 	return (lst);
 }
