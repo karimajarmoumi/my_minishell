@@ -1,0 +1,65 @@
+=======>    expand $
+=======> 	remove " && '
+=======> 	echo"jfldhsfkhekjl"jkhdkjgd
+
+
+// pipe errors
+
+=======>	||  -> syntax error near unexpected token `||'
+=======>	||| -> syntax error near unexpected token `||'
+=======>	|   -> syntax error near unexpected token `|'+
+=======>	|/	-> syntax error near unexpected token `|'
+=======>	|$  -> syntax error near unexpected token `|'
+=======>	|\" -> syntax error near unexpected token `|'
+=======>	|\' -> syntax error near unexpected token `|'
+=======>	cmd  |   |  cmd ----> syntax error near unexpected token `|'
+
+
+// redir_in error
+
+=======>	<	-> syntax error near unexpected token `newline'
+=======>	<       -> syntax error near unexpected token `newline'
+=======>	<<	-> syntax error near unexpected token `newline'
+=======>	<<      -> syntax error near unexpected token `newline'
+=======>	<<<	-> syntax error near unexpected token `newline'
+=======>	<<<<	-> syntax error near unexpected token `<'
+=======>	<<<<<	-> syntax error near unexpected token `<<'
+=======>	<<<<<<	-> syntax error near unexpected token `<<<'
+=======>	<>	-> syntax error near unexpected token `newline'
+=======>	<<>	-> syntax error near unexpected token `>'
+=======>	<<>>	-> syntax error near unexpected token `>>'
+=======>	<<>>>>	-> syntax error near unexpected token `>>'
+=======>	>| ->	 syntax error near unexpected token `newline'
+=======>	|>	->	syntax error near unexpected token `|'
+
+
+// redir_out error
+
+=======>	> 	->	syntax error near unexpected token `newline'
+=======>	>      -> syntax error near unexpected token `newline'
+=======>	>>	-> syntax error near unexpected token `newline'
+=======>	>>       -> syntax error near unexpected token `newline'
+=======>	>>|    -> syntax error near unexpected token `|'
+=======>	>>||   -> syntax error near unexpected token `||'
+=======>	>>|||   -> syntax error near unexpected token `||'
+=======>	>>>		-> syntax error near unexpected token `>'
+=======>	>>>>>>> -> syntax error near unexpected token `>>'
+=======>	>><		-> syntax error near unexpected token `<'
+=======>	>><<	-> syntax error near unexpected token `<<'
+=======>	>><<<	->	syntax error near unexpected token `<<<'
+=======>	>><<<<<  -> syntax error near unexpected token `<<<'
+
+
+ls > out1 > out2 >
+ls >> file > file2
+ls < file < f
+ls << f <s
+
+--------------------youness--------------
+echo """"'      youness  '""""
+touch oo
+env -i ./minishell
+export var+=value
+cat | cat | cat | cat | cat | ls
+"ls -la"
+export _i oo.9=o

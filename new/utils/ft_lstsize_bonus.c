@@ -1,22 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_lstsize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/06 17:19:20 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/05/25 23:05:10 by kjarmoum         ###   ########.fr       */
+/*   Created: 2022/10/17 17:23:33 by kel-baam          #+#    #+#             */
+/*   Updated: 2022/10/17 17:29:26 by kel-baam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../minishell.h"
 
-size_t	ft_strlen(const char *s)
+int	ft_lstsize(t_list *lst)
 {
-	size_t	i;
+	int	len;
 
-	i = 0;
-	while (s && s[i])
-		i++;
-	return (i);
+	len = 0;
+	while (lst)
+	{
+		len++;
+		lst = lst->next;
+	}
+	return (len);
 }

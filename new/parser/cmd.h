@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   cmd.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/06 17:19:20 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/05/25 23:05:10 by kjarmoum         ###   ########.fr       */
+/*   Created: 2023/05/17 12:37:23 by kjarmoum          #+#    #+#             */
+/*   Updated: 2023/06/07 11:03:23 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifndef CMD_H
+# define CMD_H
+
+#include "token.h"
+#include "cmd.h"
 #include "../minishell.h"
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
+int			count_token_cmd(token_t *token);
+char		*get_one_command(token_t **token);
 
-	i = 0;
-	while (s && s[i])
-		i++;
-	return (i);
-}
+#endif

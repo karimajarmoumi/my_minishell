@@ -1,22 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/06 17:19:20 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/05/25 23:05:10 by kjarmoum         ###   ########.fr       */
+/*   Created: 2023/05/07 15:33:06 by kjarmoum          #+#    #+#             */
+/*   Updated: 2023/06/07 11:03:58 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../minishell.h"
 
-size_t	ft_strlen(const char *s)
+#ifndef LEXER_H
+# define LEXER_H
+# include <stdio.h>
+# include <stdlib.h>
+# include <fcntl.h>
+
+typedef struct lexer_s
 {
+	char	c;
 	size_t	i;
+	char	*content;
+} lexer_t;
 
-	i = 0;
-	while (s && s[i])
-		i++;
-	return (i);
-}
+lexer_t		*init_lexer(char *content);
+int			lexer_advance(lexer_t *lexer);
+int			lexer_skip_whitespace(lexer_t *lexer);
+
+#endif

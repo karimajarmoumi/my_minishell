@@ -1,22 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/06 17:19:20 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/05/25 23:05:10 by kjarmoum         ###   ########.fr       */
+/*   Created: 2022/10/12 15:13:47 by kel-baam          #+#    #+#             */
+/*   Updated: 2023/06/03 18:28:50 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../minishell.h"
 
-size_t	ft_strlen(const char *s)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	size_t	i;
+	size_t			i;
+	char			*p;
+	unsigned int	size;
 
 	i = 0;
-	while (s && s[i])
+	if (!s)
+		return (NULL);
+	if (start > (unsigned int)ft_strlen(s))
+		return (ft_strdup(""));
+	if (len + start > (unsigned int)ft_strlen(s))
+		len = ft_strlen(s) - start;
+	p = malloc((len + 1) * sizeof(char));
+	if (!p)
+		return (NULL);
+	size = len + start;
+	while (start < size)
+	{
+		p[i] = s[start++];
 		i++;
-	return (i);
+	}
+	p[i] = '\0';
+	return (p);
 }

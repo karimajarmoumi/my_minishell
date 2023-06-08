@@ -1,22 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/06 17:19:20 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/05/25 23:05:10 by kjarmoum         ###   ########.fr       */
+/*   Created: 2022/10/09 21:27:38 by kel-baam          #+#    #+#             */
+/*   Updated: 2022/10/24 17:10:44 by kel-baam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../minishell.h"
 
-size_t	ft_strlen(const char *s)
+char	*ft_strdup(const char *s1)
 {
-	size_t	i;
+	int		i;
+	int		j;
+	char	*ptr;
 
+	if (!s1)
+		return (NULL);
 	i = 0;
-	while (s && s[i])
+	j = ft_strlen(s1);
+	ptr = malloc(sizeof(char) * (j + 1));
+	if (ptr == NULL)
+		return (0);
+	while (s1[i])
+	{
+		ptr[i] = s1[i];
 		i++;
-	return (i);
+	}
+	ptr[i] = '\0';
+	return (ptr);
 }

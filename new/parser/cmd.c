@@ -1,22 +1,52 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/06 17:19:20 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/05/25 23:05:10 by kjarmoum         ###   ########.fr       */
+/*   Created: 2023/05/10 17:02:55 by kjarmoum          #+#    #+#             */
+/*   Updated: 2023/06/06 16:57:59 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "cmd.h"
+#include "token.h"
+#include "lexer.h"
+#include "tree.h"
 #include "../minishell.h"
 
-size_t	ft_strlen(const char *s)
+int count_token_cmd(token_t *token)
 {
-	size_t	i;
+	int		i;
+	token_t *tmp;
 
 	i = 0;
-	while (s && s[i])
-		i++;
+	tmp = token;
+	if (token)
+	{
+		while (tmp && tmp->value[0] != '|')
+		{
+			i++;
+			tmp = tmp->next;
+		}
+	}
 	return (i);
+}
+
+int str_search(char *buffer, char c)
+{
+	int i;
+
+	i = 0;
+	if (buffer)
+	{
+		while (buffer[i])
+		{
+			if (buffer[i] == c)
+				return (1);
+			i++;
+		}
+	}
+	return (0);
 }
