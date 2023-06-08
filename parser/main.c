@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 23:26:25 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/07 10:45:43 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/08 15:55:53 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,7 +303,6 @@ t_list *store_one_cmd(token_t **tokens, char *symb)
 		tokens_cmd = tokens_of_one_command(tokens);
 		while (tokens_cmd)
 		{
-
 			cmd_args_file(tokens_cmd, &cmd_args, &symb_file);
 			ft_lstadd_back(&lst, ft_lstnew(insert_one_cmd(cmd_args, symb_file)));
 			cmd_args = NULL;
@@ -311,56 +310,70 @@ t_list *store_one_cmd(token_t **tokens, char *symb)
 			tokens_cmd = tokens_of_one_command(tokens);
 		}
 	}
-	int i;	/// AFFICHAGE
-	while (lst && lst->content)
-	{
-		//	cmd
-		i = 0;
-		printf("cmd :%s\nargs :",((t_command *)(lst->content))->cmd);
-		// args
-		while (((t_command *)(lst->content))->args[i])
-		{
-			printf("\n\t %s \n",((t_command *)(lst->content))->args[i]);
-			i++;
-		}
-		printf("\n");
-		// in files
-		while (((t_red *)((t_command *)(lst->content))->redir_in) != NULL)
-		{
-			printf("redir_in : %s , flag :%d\n",((t_red *)((t_command *)(lst->content))->redir_in->content)->file_name
-				, ((t_red *)((t_command *)(lst->content))->redir_in->content)->flag);
-			((t_command *)(lst->content))->redir_in = ((t_command *)(lst->content))->redir_in->next;
-		}
-		// out files
-		while (((t_red *)((t_command *)(lst->content))->redir_out) != NULL)
-		{
-			printf("redir_out : %s , flag :%d\n",((t_red *)((t_command *)(lst->content))->redir_out->content)->file_name
-				, ((t_red *)((t_command *)(lst->content))->redir_out->content)->flag);
-			((t_command *)(lst->content))->redir_out = ((t_command *)(lst->content))->redir_out->next;
-		}
-		printf("\n------------------------------------------\n");
-		lst = lst->next;
-	}
-	exit(1);
+	// printf("cc\n");
+	// int i;	/// AFFICHAGE
+	// while (lst && lst->content)
+	// {
+	// 	//	cmd
+	// 	i = 0;
+	// 	printf("cmd :%s\nargs :",((t_command *)(lst->content))->cmd);
+	// 	// args
+	// 	while (((t_command *)(lst->content))->args[i])
+	// 	{
+	// 		printf("\n\t %s \n",((t_command *)(lst->content))->args[i]);
+	// 		i++;
+	// 	}
+	// 	printf("\n");
+	// 	// in files
+	// 	while (((t_red *)((t_command *)(lst->content))->redir_in) != NULL)
+	// 	{
+	// 		printf("redir_in : %s , flag :%d\n",((t_red *)((t_command *)(lst->content))->redir_in->content)->file_name
+	// 			, ((t_red *)((t_command *)(lst->content))->redir_in->content)->flag);
+	// 		((t_command *)(lst->content))->redir_in = ((t_command *)(lst->content))->redir_in->next;
+	// 	}
+	// 	// out files
+	// 	while (((t_red *)((t_command *)(lst->content))->redir_out) != NULL)
+	// 	{
+	// 		printf("redir_out : %s , flag :%d\n",((t_red *)((t_command *)(lst->content))->redir_out->content)->file_name
+	// 			, ((t_red *)((t_command *)(lst->content))->redir_out->content)->flag);
+	// 		((t_command *)(lst->content))->redir_out = ((t_command *)(lst->content))->redir_out->next;
+	// 	}
+	// 	printf("\n------------------------------------------\n");
+	// 	lst = lst->next;
+	// }
+	// exit(1);
 	return (lst);
 }
 
-int pipe_error(token_t *tokens)
+int pipe_error(token_t *tokens, token_t *prev)
 {
 	char	*buffer;
 
 	buffer = NULL;
 	if (tokens)
 	{
-		buffer =  ft_strdup("syntax error near unexpected token `|");
-		while (tokens && tokens->type == 4)
-			tokens = tokens->next;
-		if (tokens->next && tokens->next->value[0] == '|')
+		tokens = tokens->next;
+		if (!prev)
 		{
-			buffer = ft_strjoin(buffer, "|");
+			buffer =  ft_strdup("syntax error near unexpected token `|");
+			if (tokens && tokens->value[0] == '|')
+			{
+				buffer = ft_strjoin(buffer, "|");
+				tokens = tokens->next;
+			}
 			buffer = ft_strjoin(buffer, "'");
 			print_cmd_error(NULL, NULL, buffer, 258);
 			return (1);
+		}
+		else
+		{
+			while (tokens && tokens->type == 4)
+				tokens = tokens->next;
+			if (!tokens || (tokens && tokens->type == 2))
+			{
+				print_cmd_error(NULL, NULL, ft_strdup("syntax error near unexpected token `|'"), 258);
+				return (1);
+			}
 		}
 	}
 	return (0);
@@ -433,8 +446,6 @@ int qoute_error(token_t *token)
 	return (0);
 }
 
-
-
 int redir_in_error(token_t *token)
 {
 	int		i;
@@ -489,6 +500,18 @@ int redir_out_error(token_t *token)
 	if (token)
 	{
 		token = token->next;
+		if (token && token->type == 2)
+		{
+			token = token->next;
+			while (token && token->type == 4)
+				token = token->next;
+			if (!token)
+			{
+				print_cmd_error(NULL, NULL, "syntax error near unexpected token `newline'", 258);
+				return (1);
+			}
+			return (0);
+		}
 		if (token && token->type == 1)
 			token = token->next;
 		while (token && token->type == 4)
@@ -515,50 +538,55 @@ int redir_out_error(token_t *token)
 	return (0);
 }
 
-
-
-
 int redir_error(token_t *token, int type)
 {
 	if (token)
 	{
-		if (type == 0)
-		{
-			redir_in_error(token);
+		if (type == 0 && redir_in_error(token))
 			return (1);
-		}
-		else
-		{
-			redir_out_error(token);
+		else if (type == 1 && redir_out_error(token))
 			return (1);
-		}
 	}
 	return (0);
 }
 
-int check_parsing_error(token_t *tokens)
+void	check_parsing_error(token_t *tokens, int *flg_err)
 {
+	token_t *prev;
+
+	prev = NULL;
 	if (tokens)
 	{
 		while (tokens)
 		{
-			if (tokens->value[0] == '|')
-				return (pipe_error(tokens));
+			if (tokens->type == 3)
+				prev = tokens;
+			else if (tokens->value[0] == '|')
+			{
+				*flg_err = pipe_error(tokens, prev);
+				break;
+			}
 			else if (tokens->value[0] == '<')
-				return (redir_error(tokens , 0));
+			{
+				*flg_err = redir_error(tokens , 0);
+				break;
+			}
 			else if (tokens->value[0] == '>')
-				return (redir_error(tokens , 1));
-			else if (tokens->value[0] == '\'' || tokens->value[0] == '\"')
-				return (qoute_error(tokens));
+			{
+				*flg_err = redir_error(tokens , 1);
+				break;
+			}
+			// else if (tokens->value[0] == '\'' || tokens->value[0] == '\"')
+			// 	return (qoute_error(tokens));
 			// if (tokens->next && (tokens->next->type == 5 || tokens->next->type == 6))
 			// 	qoute_error(tokens);
 			tokens = tokens->next;
 		}
+
 	}
-	return (0);
 }
 
-t_list	*parser(char *line)
+t_list	*parser(char *line, int *flg_err)
 {
 	lexer_t	*lexer;
 	token_t	*token;
@@ -572,7 +600,8 @@ t_list	*parser(char *line)
 	symb = "<>";
 	types = "<>| '\"$";
 	token = get_all_tokens(lexer, types);
-	check_parsing_error((token));
+	check_parsing_error(token, flg_err);
+	//printf("%d\n",*flg_err);
 	lst = store_one_cmd(&token, symb);
 	return (lst);
 }

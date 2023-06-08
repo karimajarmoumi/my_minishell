@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 15:33:16 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/05/21 17:41:50 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/07 11:03:49 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 
 lexer_t *init_lexer(char *content)
 {
-	lexer_t *lexer;
+	lexer_t	*lexer;
+
 	lexer = calloc(1, sizeof(lexer_t));
 	lexer->i = 0;
 	lexer->content = malloc(sizeof(ft_strlen(content)));
@@ -42,5 +43,3 @@ int lexer_skip_whitespace(lexer_t *lexer)
 		lexer_advance(lexer);
 	return (1);
 }
-
-

@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 15:33:06 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/05/22 17:32:18 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/07 11:03:58 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>
-
 
 typedef struct lexer_s
 {

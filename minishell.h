@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 10:31:33 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/06 16:58:14 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/07 11:37:23 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ typedef struct s_command
 {
 	char			*cmd;
 	char			**args;
+	// 1 if syntax error exist 0 if not
+	int				flg;
 	t_list			*redir_in;
 	t_list			*redir_out;
 
@@ -66,6 +68,7 @@ typedef struct s_node
 	struct s_node	*parent;
 	struct s_node	*left;
 	struct s_node	*right;
+
 }					t_node;
 
 typedef struct s_data
@@ -128,20 +131,15 @@ void				signals_for_child(void);
 void				signals_for_parent(void);
 t_node				*get_most_left(t_node *node);
 char				*ft_strchr(const char *s, int c);
-t_list				*parser(char *line);
 t_command			*store_one_command(token_t **token);
 char				**convert_tree_to_array();
 void				cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file);
 t_command			*insert_one_cmd(char *cmd_args, char *symb_file);
-
 t_red				*init_red(int flg);
 token_t				*tokens_of_one_command(token_t **token);
-char	*tokens_cmd_to_string(token_t *token);
-
-
-
+char				*tokens_cmd_to_string(token_t *token);
 char				*ft_strchr(const char *s, int c);
-t_list				*parser(char *line);
+t_list				*parser(char *line, int *flg_err);
 t_command			*store_one_command(token_t **token);
 char				**convert_tree_to_array(void);
 void				get_inputfile_fd(int *last_fd, t_list *redir_in,

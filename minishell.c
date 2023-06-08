@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 14:35:45 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/06 16:58:32 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/07 17:50:16 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,22 +33,26 @@ int	main(int ac, char **av, char **env)
 	t_list		*commands;
 	t_command	*data;
 	char		*line;
+	int			flg_err;
 
 	line = NULL;
 	initilizer(env);
+	flg_err = 0;
 	//signals_for_parent();
 	while (1)
 	{
 		if (line)
 			ft_free(line);
-		tcsetattr(STDIN_FILENO, TCSANOW, &(g_data.new_term));
+		//tcsetattr(STDIN_FILENO, TCSANOW, &(g_data.new_term));
 		line = readline(PERPOL " 🌸 beautiful as a shell : 🌸 $ " RESET);
 		if (line)
 		{
 			if (!ft_strlen(line) || !ft_strncmp(line, "\n",2))
 				continue ;
 			add_history(line);
-			commands = parser(line);
+			commands = parser(line, &flg_err);
+			if (flg_err == 1)
+				continue;
 			executer(commands);
 			add_node(&(g_data.env_vars),"?",ft_itoa(g_data.status_code),NULL);
 			//printf("%d\n",g_data.status_code);

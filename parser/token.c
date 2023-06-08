@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 18:37:52 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/05/27 00:07:23 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/08 16:06:01 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,6 @@ token_t *get_one_token(lexer_t *lexer, char *types)
 	if (lexer->c == '\"' || lexer->c == '\'')
 	{
 		qoute = lexer->c;
-		c_string = char_to_string(lexer->c);
-		buffer = ft_strjoin(buffer, c_string);
 		lexer_advance(lexer);
 		while (lexer->c != '\0' && lexer->c != qoute)
 		{
@@ -69,10 +67,13 @@ token_t *get_one_token(lexer_t *lexer, char *types)
 			buffer = ft_strjoin(buffer, c_string);
 			lexer_advance(lexer);
 		}
-		c_string = char_to_string(lexer->c);
-		buffer = ft_strjoin(buffer, c_string);
+		//c_string = char_to_string(lexer->c);
+		//buffer = ft_strjoin(buffer, c_string);
 		lexer_advance(lexer);
-		return (init_token(buffer, token_s_qoute));
+		if (qoute == '"')
+			return (init_token(buffer, token_d_qoute));
+		else
+			return (init_token(buffer, token_s_qoute));
 	}
 	// $
 	if (lexer->c == '$')
