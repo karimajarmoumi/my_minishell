@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 10:31:33 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/07 11:37:23 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/08 20:28:34 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,4 +146,6 @@ void				get_inputfile_fd(int *last_fd, t_list *redir_in,
 						int write_fd1, int read_fd);
 void				get_outfile_fd(int *fd, t_list *file_list);
 void				duplicate_fds(t_list *tmp, int last_fd, int *fds);
+size_t				ft_strlcpy(char *dst, const char *src, size_t dstsize);
+
 #endif

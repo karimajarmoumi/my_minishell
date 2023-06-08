@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 23:26:25 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/08 15:55:53 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/08 22:01:11 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,21 @@ t_list *init_lst()
 	return (lst);
 }
 
+void remove_s_d_qoute(char **buffer)
+{
+	char	*tmp;
+
+	tmp = ft_strdup("");
+	if (buffer)
+	{
+		if ((*buffer)[0] == '"' || (*buffer)[0] == '\'')
+		{
+			(*buffer)++;
+			ft_strlcpy(tmp, *buffer, ft_strlen(*buffer));
+			*buffer = tmp;
+		}
+	}
+}
 void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 {
 	int		flag;
@@ -150,6 +165,7 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 	{
 		while (token_cmd)
 		{
+			// red
 			if (token_cmd->type == 0 || token_cmd->type == 1)
 			{
 				ft_lstadd_back_token(&symb_fl, init_token(token_cmd->value, token_cmd->type));
@@ -166,7 +182,8 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 					token_cmd = token_cmd->next;
 				}
 				while (token_cmd && token_cmd->type == 3)
-				{
+				{//
+					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&symb_fl, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
@@ -176,14 +193,16 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 			{
 				while (token_cmd && token_cmd->type == 4)
 				{
+					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&cmd_arg, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
 			}
 			else if (token_cmd && token_cmd->type == 3)
-			{
+			{//
 				while (token_cmd && token_cmd->type == 3)
 				{
+					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&cmd_arg, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
@@ -191,13 +210,15 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 			}
 			else if (token_cmd)
 			{
-				if (flag == 0)
+				if (flag == 0 )
 				{
+					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&symb_fl, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
-				else if (flag == 1)
-				{
+				else if (flag == 1|| flag == -1)
+				{//
+					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&cmd_arg, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
@@ -379,24 +400,7 @@ int pipe_error(token_t *tokens, token_t *prev)
 	return (0);
 }
 
-char	*remove_char_from_str(char *buffer, char c)
-{
-	int		i;
-	char	*str;
 
-	i = 0;
-	str = ft_strdup("");
-	if (buffer)
-	{
-		while (buffer[i])
-		{
-			if (buffer[i] != c)
-				str = ft_strjoin(str, char_to_string(buffer[i]));
-			i++;
-		}
-	}
-	return (str);
-}
 
 // int qoute_error(token_t *tokens)
 // {
@@ -429,18 +433,15 @@ int qoute_error(token_t *token)
 {
 	if (token)
 	{
-		if (token->value[0] == '\'' || token->value[0] == '\"')
+		if (ft_strlen(token->value) == 1)
 		{
-			if (ft_strlen(token->value) == 1)
-			{
-				print_cmd_error(NULL, NULL, "syntax error", 1);
-				return (1);
-			}
-			else if (token->value[ft_strlen(token->value) - 1] != token->value[0])
-			{
-				print_cmd_error(NULL, NULL, "syntax error", 1);
-				return (1);
-			}
+			print_cmd_error(NULL, NULL, "syntax error", 1);
+			return (1);
+		}
+		else if (token->value[ft_strlen(token->value) - 1] != token->value[0])
+		{
+			print_cmd_error(NULL, NULL, "syntax error", 1);
+			return (1);
 		}
 	}
 	return (0);
@@ -564,20 +565,27 @@ void	check_parsing_error(token_t *tokens, int *flg_err)
 			else if (tokens->value[0] == '|')
 			{
 				*flg_err = pipe_error(tokens, prev);
-				break;
+				if (*flg_err)
+					break;
 			}
 			else if (tokens->value[0] == '<')
 			{
 				*flg_err = redir_error(tokens , 0);
-				break;
+				if (*flg_err)
+					break;
 			}
 			else if (tokens->value[0] == '>')
 			{
 				*flg_err = redir_error(tokens , 1);
-				break;
+				if (*flg_err)
+					break;
 			}
-			// else if (tokens->value[0] == '\'' || tokens->value[0] == '\"')
-			// 	return (qoute_error(tokens));
+			else if (tokens->type == 5 || tokens->type == 6)
+			{
+				*flg_err = qoute_error(tokens);
+				if (*flg_err)
+					break;
+			}
 			// if (tokens->next && (tokens->next->type == 5 || tokens->next->type == 6))
 			// 	qoute_error(tokens);
 			tokens = tokens->next;
@@ -585,6 +593,27 @@ void	check_parsing_error(token_t *tokens, int *flg_err)
 
 	}
 }
+
+char	*remove_char_from_str(char *buffer, char c)
+{
+	int		i;
+	char	*str;
+
+	i = 0;
+	str = ft_strdup("");
+	if (buffer)
+	{
+		while (buffer[i])
+		{
+			if (buffer[i] != c)
+				str = ft_strjoin(str, char_to_string(buffer[i]));
+			i++;
+		}
+	}
+	return (str);
+}
+
+
 
 t_list	*parser(char *line, int *flg_err)
 {
@@ -601,7 +630,7 @@ t_list	*parser(char *line, int *flg_err)
 	types = "<>| '\"$";
 	token = get_all_tokens(lexer, types);
 	check_parsing_error(token, flg_err);
-	//printf("%d\n",*flg_err);
 	lst = store_one_cmd(&token, symb);
+	//lst = remove_qoute(lst);
 	return (lst);
 }
