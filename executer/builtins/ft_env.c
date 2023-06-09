@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 16:26:15 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/05/18 16:26:18 by kel-baam         ###   ########.fr       */
+/*   Updated: 2023/06/09 15:36:33 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 //final version
 void	preorder_traversal(t_node *head,int fd)
@@ -45,7 +46,7 @@ char	*get_env(char *key)
 	return (NULL);
 }
 
-char** store_envs(t_node* head, char** envs, int* i) 
+char** store_envs(t_node* head, char** envs, int* i)
 {
     int len_key;
     int len_value;
@@ -61,17 +62,17 @@ char** store_envs(t_node* head, char** envs, int* i)
         envs[*i][j] = head->key[j];
         j++;
     }
-    
+
     envs[*i][j] = '=';
     j++;
-    
+
     int k = 0;
     while (j < len_key+len_value+ 1) {
         envs[*i][j] = head->value[k];
         k++;
         j++;
     }
-    
+
     envs[*i][j] = '\0';
     (*i)++;
 

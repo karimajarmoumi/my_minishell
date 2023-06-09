@@ -1,40 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/16 17:27:41 by kel-baam          #+#    #+#             */
-/*   Updated: 2022/10/23 23:06:58 by kel-baam         ###   ########.fr       */
+/*   Created: 2022/10/06 13:30:42 by kel-baam          #+#    #+#             */
+/*   Updated: 2022/10/24 17:09:25 by kel-baam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../minishell.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+void	ft_bzero(void *s, size_t n)
 {
-	int		i;
-	int		j;
-	char	*p;
+	unsigned char	*s2;
+	size_t			i;
 
 	i = 0;
-	if (!s1 || !s2)
-		return (NULL);
-	p = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
-	if (!p)
-		return (NULL);
-	while (s1[i])
+	s2 = (unsigned char *)s;
+	while (i < n)
 	{
-		p[i] = s1[i];
+		s2[i] = 0;
 		i++;
 	}
-	j = 0;
-	while (s2[j])
-	{
-		p[i] = s2[j];
-		i++;
-		j++;
-	}
-	p[i] = '\0';
-	return (p);
 }

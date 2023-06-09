@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 14:35:45 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/07 17:50:16 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/09 14:36:40 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,6 @@ int	main(int ac, char **av, char **env)
 		else
 			exit(g_data.status_code);
 	}
+
 	return (0);
 }

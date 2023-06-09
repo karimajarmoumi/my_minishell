@@ -33,6 +33,6 @@ void	init_envs(char **envs)
 
 void	initilizer(char **envs)
 {
-	bzero(&g_data, sizeof(t_data));
+	ft_bzero(&g_data, sizeof(t_data));
 	init_envs(envs);
 }

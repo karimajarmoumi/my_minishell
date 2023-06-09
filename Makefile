@@ -2,7 +2,7 @@ NAME = minishell
 HOME_BREW_PATH=/Users/kel-baam/goinfre/homebrew
 CC = cc
 
-#RFLAG =-L ${HOME_BREW_PATH}/opt/readline/lib -I ${HOME_BREW_PATH}/opt/readline/include -lreadline
+RFLAG = #-L ${HOME_BREW_PATH}/opt/readline/lib -I ${HOME_BREW_PATH}/opt/readline/include -lreadline
 
 CFLAGS =#-fsanitize=address# -Wall -Wextra -Werror
 

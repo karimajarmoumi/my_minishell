@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 23:26:25 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/08 22:01:11 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/09 16:15:53 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,106 +15,6 @@
 #include "cmd.h"
 #include "../minishell.h"
 
-token_t	*ft_lstlast_token(token_t *lst)
-{
-	if (!lst)
-		return (NULL);
-	while (lst->next)
-	{
-		lst = lst->next;
-	}
-	return (lst);
-}
-
-void	ft_lstadd_back_token(token_t **lst, token_t *new)
-{
-	token_t	*last_node;
-
-	if (lst)
-	{
-		if (!*lst)
-			*lst = new;
-		else
-		{
-			last_node = ft_lstlast_token(*lst);
-			last_node->next = new;
-		}
-	}
-}
-
-token_t *copy_of_list(token_t *original, int size)
-{
-	int		i;
-	token_t *copy;
-
-	i = 0;
-	copy = NULL;
-	if (original)
-	{
-		while (original && i < size)
-		{
-			ft_lstadd_back_token(&copy, init_token(original->value, original->type));
-			original = original->next;
-			i++;
-		}
-	}
-	return (copy);
-}
-
-int	number_of_tokens_before_pipe(token_t *token)
-{
-	int i;
-
-	i = 0;
-	if (token)
-	{
-		while (token && token->value[0] != '|')
-		{
-			i++;
-			token = token->next;
-		}
-	}
-	return (i);
-}
-
-token_t *tokens_of_one_command(token_t **token)
-{
-	int		i;
-	int		count_token;
-	token_t *tokens_cmd;
-
-	i = 0;
-	tokens_cmd = NULL;
-
-	if (token && *token)
-	{
-		count_token = number_of_tokens_before_pipe(*token);
-		tokens_cmd = copy_of_list(*token ,count_token);
-		while (*token  && i <= count_token)
-		{
-			*token = (*token)->next;
-			i++;
-		}
-	}
-	return (tokens_cmd);
-}
-
-char	*tokens_cmd_to_string(token_t *token)
-{
-	char	*buffer;
-
-	buffer = ft_strdup("");
-	if (token)
-	{
-		while (token)
-		{
-			buffer = ft_strjoin(buffer, token->value);
-			token = token->next;
-		}
-		buffer = ft_strjoin(buffer, "\0");
-	}
-	return (buffer);
-}
 
 t_red	*init_red(int flg)
 {
@@ -151,6 +51,29 @@ void remove_s_d_qoute(char **buffer)
 		}
 	}
 }
+
+void expand(token_t **token)
+{
+	char	*tmp;
+	char	*result;
+
+	tmp = NULL;
+	result = NULL;
+	if (token)
+	{
+		tmp = ft_strdup((*token)->value);
+		if ((*token)->value[0] == '$')
+		{
+			result = get_env(&((*token)->value[1]));
+			if (result)
+				(*token)->value = result;
+			printf("%s\n",(*token)->value);
+			//value = get_env()
+		}
+	}
+	//return (tmp);
+}
+
 void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 {
 	int		flag;
@@ -183,6 +106,7 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 				}
 				while (token_cmd && token_cmd->type == 3)
 				{//
+					expand(&token_cmd);
 					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&symb_fl, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
@@ -202,6 +126,7 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 			{//
 				while (token_cmd && token_cmd->type == 3)
 				{
+					expand(&token_cmd);
 					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&cmd_arg, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
@@ -212,12 +137,14 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 			{
 				if (flag == 0 )
 				{
+					expand(&token_cmd);
 					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&symb_fl, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
 				else if (flag == 1|| flag == -1)
-				{//
+				{
+					expand(&token_cmd);
 					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&cmd_arg, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
@@ -331,7 +258,6 @@ t_list *store_one_cmd(token_t **tokens, char *symb)
 			tokens_cmd = tokens_of_one_command(tokens);
 		}
 	}
-	// printf("cc\n");
 	// int i;	/// AFFICHAGE
 	// while (lst && lst->content)
 	// {
@@ -399,35 +325,6 @@ int pipe_error(token_t *tokens, token_t *prev)
 	}
 	return (0);
 }
-
-
-
-// int qoute_error(token_t *tokens)
-// {
-// 	char	to_remove;
-// 	char	*buffer;
-
-// 	buffer = ft_strdup("");
-// 	to_remove = '\0';
-// 	if (tokens)
-// 	{
-// 		buffer = ft_strjoin(buffer, tokens->value);
-// 		tokens = tokens->next;
-// 		to_remove = tokens->value[0];
-// 		while (tokens && tokens->type != 4)
-// 		{
-// 			if (tokens->type == 5 || tokens->type == 6)
-// 				buffer = ft_strjoin(buffer, tokens->value);
-// 			else if (tokens->type == 7 && tokens->next->type != 4)
-// 				buffer = ft_strjoin(buffer, char_to_string(tokens->value[0]));
-// 			tokens = tokens->next;
-// 		}
-
-// 		print_cmd_error(buffer, NULL, "command not found", 127);
-// 		return (1);
-// 	}
-// 	return (0);
-// }
 
 int qoute_error(token_t *token)
 {
@@ -586,8 +483,11 @@ void	check_parsing_error(token_t *tokens, int *flg_err)
 				if (*flg_err)
 					break;
 			}
-			// if (tokens->next && (tokens->next->type == 5 || tokens->next->type == 6))
-			// 	qoute_error(tokens);
+			//------ todo--------------------------
+			// else if (tokens->type == 7)
+			// {
+
+			// }
 			tokens = tokens->next;
 		}
 
@@ -631,6 +531,7 @@ t_list	*parser(char *line, int *flg_err)
 	token = get_all_tokens(lexer, types);
 	check_parsing_error(token, flg_err);
 	lst = store_one_cmd(&token, symb);
-	//lst = remove_qoute(lst);
+	herdoc(lst);
 	return (lst);
 }
+
