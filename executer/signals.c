@@ -6,11 +6,12 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 15:57:07 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/09 14:41:15 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/09 16:29:35 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
 void	prompt(int sig)
 {
 // 	g_data.status_code = 1;

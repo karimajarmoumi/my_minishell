@@ -26,7 +26,7 @@ int	ft_cd(t_command *command)
 		prev = get_env("OLDPWD");
 		if (!prev)
 			return (print_cmd_error(command->cmd, NULL, "OLDPWD not set", 1));
-				command->args[1] = prev;
+		command->args[1] = prev;
 		printf("%s\n", command->args[1]);
 	}
 	if (!command->args[1])

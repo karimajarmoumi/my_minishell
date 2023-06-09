@@ -86,4 +86,3 @@ void	free_node(t_node **node)
 	ft_free(*node);
 	*node = NULL;
 }
-

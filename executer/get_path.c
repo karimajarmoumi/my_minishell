@@ -22,8 +22,8 @@ char	*get_right_path(char *cmd, t_command *data)
 	env = get_env("PATH");
 	if (!env)
 		g_data.status_code = print_cmd_error(cmd, NULL,
-			"No such file or directory", 127);
-			paths = ft_split(env, ':');
+				"No such file or directory", 127);
+	paths = ft_split(env, ':');
 	absolute_path = NULL;
 	cmd = ft_strjoin("/", cmd);
 	while (paths[i])

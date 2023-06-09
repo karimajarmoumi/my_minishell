@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 23:26:25 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/09 16:15:53 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/09 17:25:55 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void remove_s_d_qoute(char **buffer)
 	}
 }
 
-void expand(token_t **token)
+void expand(char **token)
 {
 	char	*tmp;
 	char	*result;
@@ -61,17 +61,14 @@ void expand(token_t **token)
 	result = NULL;
 	if (token)
 	{
-		tmp = ft_strdup((*token)->value);
-		if ((*token)->value[0] == '$')
+		tmp = ft_strdup((*token));
+		if ((*token)[0] == '$')
 		{
-			result = get_env(&((*token)->value[1]));
+			result = get_env(&((*token)[1]));
 			if (result)
-				(*token)->value = result;
-			printf("%s\n",(*token)->value);
-			//value = get_env()
+				(*token) = result;
 		}
 	}
-	//return (tmp);
 }
 
 void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
@@ -106,7 +103,7 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 				}
 				while (token_cmd && token_cmd->type == 3)
 				{//
-					expand(&token_cmd);
+					expand(&token_cmd->value);
 					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&symb_fl, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
@@ -126,7 +123,7 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 			{//
 				while (token_cmd && token_cmd->type == 3)
 				{
-					expand(&token_cmd);
+					expand(&token_cmd->value);
 					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&cmd_arg, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
@@ -137,14 +134,14 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 			{
 				if (flag == 0 )
 				{
-					expand(&token_cmd);
+					expand(&token_cmd->value);
 					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&symb_fl, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
 				else if (flag == 1|| flag == -1)
 				{
-					expand(&token_cmd);
+					expand(&token_cmd->value);
 					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&cmd_arg, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;

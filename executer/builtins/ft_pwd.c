@@ -20,6 +20,6 @@ int	ft_pwd(char *cmd, int fd)
 	if (!getcwd(buff, sizeof(buff)))
 		return (print_cmd_error(cmd, NULL, strerror(errno), 1));
 	write(fd, buff, ft_strlen(buff));
-	write(fd,"\n",1);
+	write(fd, "\n", 1);
 	return (status);
 }

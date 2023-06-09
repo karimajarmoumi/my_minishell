@@ -9,13 +9,9 @@
 /*   Updated: 2023/06/09 14:36:40 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
 #include "minishell.h"
-#include <ctype.h>
-//echo \n \0
 
-char **convert_tree_to_array()
+char	**convert_tree_to_array(void)
 {
 	int		p;
 	char	**envs;
@@ -47,19 +43,20 @@ int	main(int ac, char **av, char **env)
 		line = readline(PERPOL " 🌸 beautiful as a shell : 🌸 $ " RESET);
 		if (line)
 		{
-			if (!ft_strlen(line) || !ft_strncmp(line, "\n",2))
+			if (!ft_strlen(line) || !ft_strncmp(line, "\n", 2))
 				continue ;
 			add_history(line);
 			commands = parser(line, &flg_err);
 			if (flg_err == 1)
 				continue;
 			executer(commands);
-			add_node(&(g_data.env_vars),"?",ft_itoa(g_data.status_code),NULL);
+			add_node(&(g_data.env_vars), "?", ft_itoa(g_data.status_code),
+				NULL);
 			//printf("%d\n",g_data.status_code);
 		}
 		else
 			exit(g_data.status_code);
 	}
-
+	
 	return (0);
 }

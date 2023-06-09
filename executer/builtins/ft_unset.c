@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
-//final version
+
 int	ft_unset(t_command *command)
 {
 	int	i;
@@ -27,7 +27,6 @@ int	ft_unset(t_command *command)
 			i++;
 			continue ;
 		}
-		// is this write right or not 
 		remove_node(&(g_data.env_vars), command->args[i]);
 		i++;
 	}

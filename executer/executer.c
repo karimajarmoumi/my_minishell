@@ -6,13 +6,12 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 10:29:18 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/09 14:39:37 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/09 17:21:27 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
 #include "../minishell.h"
+
 void	execute_command(t_command *tmp_command, char *path)
 {
 	char	**envs;
@@ -24,7 +23,7 @@ void	execute_command(t_command *tmp_command, char *path)
 	}
 	else
 	{
-		char **envs=convert_tree_to_array();
+		envs = convert_tree_to_array();
 		if (execve(path, tmp_command->args, envs) == -1)
 			exit(127);
 	}
@@ -83,17 +82,15 @@ int	run_builtins(t_list *commands)
 	outfile = 1;
 	if (commands && !commands->next)
 	{
-		if (  tmp_command->cmd && (!strcmp(tmp_command->cmd, "unset") || !strcmp(tmp_command->cmd,
-					"export") || !strcmp(tmp_command->cmd, "cd")
-				|| !strcmp(tmp_command->cmd, "exit")))
+		if (tmp_command->cmd && (!strcmp(tmp_command->cmd, "unset")
+				|| !strcmp(tmp_command->cmd, "export")
+				|| !strcmp(tmp_command->cmd, "cd") || !strcmp(tmp_command->cmd,
+					"exit")))
 		{
-			get_inputfile_fd(&infile, tmp_command->redir_in, 1, 0);
+			get_inputfile_fd(&infile, tmp_command->redir_in);
 			get_outfile_fd(&outfile, tmp_command->redir_out);
-
-			g_data.status_code=execute_bultin(tmp_command, outfile);
-
-			return g_data.status_code;
-
+			g_data.status_code = execute_bultin(tmp_command, outfile);
+			return (g_data.status_code);
 		}
 	}
 	return (-1);
@@ -125,12 +122,12 @@ void	executer(t_list *commands)
 		if (!pid)
 		{
 			//signals_for_child();
-			get_inputfile_fd(&last_fd, tmp_command->redir_in, fds[1], fds[0]);
+			//get_inputfile_fd(&last_fd, tmp_command->redir_in, fds[1], fds[0]);
 			get_outfile_fd(&fds[1], tmp_command->redir_out);
 			signals_for_child();
-			if(get_inputfile_fd(&last_fd, tmp_command->redir_in, fds[1], fds[0])==1)
+			if (get_inputfile_fd(&last_fd, tmp_command->redir_in) == 1)
 				exit(g_data.status_code);
-			if(get_outfile_fd(&fds[1], tmp_command->redir_out)==1)
+			if (get_outfile_fd(&fds[1], tmp_command->redir_out) == 1)
 				exit(g_data.status_code);
 			duplicate_fds(tmp, last_fd, fds);
 			execute_command(tmp_command, get_my_path(tmp_command));

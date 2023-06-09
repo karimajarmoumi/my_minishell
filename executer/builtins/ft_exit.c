@@ -27,26 +27,21 @@ int	ft_exit(t_command *command)
 			|| ft_atoi(command->args[1]) == 0)
 			status = print_cmd_error(command->cmd, command->args[1],
 					"numeric argument required", 255);
-        //exit g
 		if (command->args && command->args[2] && !status)
 		{
 			one_arg = 0;
 			status = print_cmd_error(command->cmd, NULL, "too many arguments",
 					1);
 		}
-		if (command->args[1] && is_num(command->args[1]) >=0 && one_arg)
+		if (command->args[1] && is_num(command->args[1]) >= 0 && one_arg)
 		{
 			test = (unsigned char)ft_atoi(command->args[1]);
 			status = test;
 		}
 	}
 	g_data.status_code = status;
-    add_node(&(g_data.env_vars), "?", ft_itoa(g_data.status_code),NULL);
-    if(one_arg)
-	    exit(g_data.status_code);
+	add_node(&(g_data.env_vars), "?", ft_itoa(g_data.status_code), NULL);
+	if (one_arg)
+		exit(g_data.status_code);
 	return (status);
 }
-
-//exit num
-//exit alone
-//exit hhhh

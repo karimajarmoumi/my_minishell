@@ -16,7 +16,8 @@ int	check_option(char *str)
 	int	i;
 
 	i = 0;
-	i++;
+	if (str[i] == '-')
+		i++;
 	while (str[i])
 	{
 		if (str[i] != 'n')
