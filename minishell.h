@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 10:31:33 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/09 17:26:59 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/10 16:38:08 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,5 +160,16 @@ token_t				*copy_of_list(token_t *original, int size);
 void				expand(char **token);
 void				exec_herdoc(char *del, int fd);
 void				herdoc(t_list *command_lst);
+void				check_parsing_error(token_t *tokens, int *flg_err);
+int					redir_out_error(token_t *token);
+int					redir_error(token_t *token, int type);
+int					redir_in_error(token_t *token);
+int					qoute_error(token_t *token);
+int					pipe_error(token_t *tokens, token_t *prev);
+int					ft_isdigit(int c);
+int					ft_isalpha(int c);
+int					ft_isalnum(int c);
+
+
 
 #endif

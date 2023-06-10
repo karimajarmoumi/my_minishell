@@ -52,7 +52,7 @@ void	add_new_value(int pos, char *arg, char **value, char **key)
 		old_value = ft_strdup("");
 	*value = ft_strjoin(old_value, new_value);
 }
-int	add_new_element(t_command *command)
+int	add_new_element(t_command *cmd)
 {
 	int		i;
 	int		pos;
@@ -64,38 +64,30 @@ int	add_new_element(t_command *command)
 	flag = 0;
 	status = 0;
 	i = 1;
-	while (command->args && command->args[i])
+	while (cmd->args && cmd->args[i])
 	{
-		pos = find_char(command->args[i], '=');
-		if (command->args[i][pos - 1] == '+')
+		pos = find_char(cmd->args[i], '=');
+		if (cmd->args[i][pos - 1] == '+')
 			flag = 1;
-		if (pos == -1 && is_valid_key(command->args[i]) == -1)
+		if (pos == -1)
 		{
-			status = print_cmd_error(command->cmd, command->args[i],
-					"not a valid identifier", 1);
+			key = cmd->args[i];
+			value = NULL;
+		}
+		key = ft_substr(cmd->args[i], 0, pos);
+		value = ft_substr(cmd->args[i], pos + 1, ft_strlen(cmd->args[i]));
+		if (is_valid_key(key) == -1)
+		{
+			status = print_cmd_error(cmd->cmd, key, "not a valid identifier",
+					1);
 			i++;
 			continue ;
 		}
-		else if (pos != -1)
-		{
-			key = ft_substr(command->args[i], 0, pos);
-			value = ft_substr(command->args[i], pos + 1,
-					ft_strlen(command->args[i]));
-			if (is_valid_key(key) == -1)
-			{
-				status = print_cmd_error(command->cmd, key,
-						"not a valid identifierd", 1);
-				i++;
-				continue ;
-			}
-			if (flag)
-				add_new_value(pos, command->args[i], &value, &key);
-			add_node(&(g_data.env_vars), key, value, NULL);
-			ft_free(key);
-			ft_free(value);
-		}
-		else
-			add_node(&(g_data.env_vars), command->args[i], NULL, NULL);
+		if (flag)
+			add_new_value(pos, cmd->args[i], &value, &key);
+		add_node(&(g_data.env_vars), key, value, NULL);
+		ft_free(key);
+		ft_free(value);
 		i++;
 	}
 	return (status);

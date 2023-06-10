@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 23:26:25 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/09 17:25:55 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/10 19:17:36 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,11 @@ void remove_s_d_qoute(char **buffer)
 
 void expand(char **token)
 {
-	char	*tmp;
 	char	*result;
 
-	tmp = NULL;
 	result = NULL;
 	if (token)
 	{
-		tmp = ft_strdup((*token));
 		if ((*token)[0] == '$')
 		{
 			result = get_env(&((*token)[1]));
@@ -69,6 +66,81 @@ void expand(char **token)
 				(*token) = result;
 		}
 	}
+}
+
+int get_char_position(char *buffer, char c)
+{
+	int	i;
+
+	i = 0;
+	if (buffer)
+	{
+		while (buffer[i])
+		{
+			if (buffer[i] == c)
+				return (i);
+			i++;
+		}
+	}
+	return (0);
+}
+
+int	len_str_to_expand(char *str)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (str[i])
+	{
+		if (ft_isalnum(str[i]))
+			count++;
+		i++;
+	}
+	return (count + 1);
+}
+
+char *expand_with_quote(token_t *token)
+{
+	int		i;
+	int		is_s_d_qoute;
+	char	*tmp;
+	char	*to_expand;
+	char	*before_dollar;
+	char	*after_dollar;
+
+	i = 0;
+	tmp = NULL;
+	is_s_d_qoute = 0;
+	to_expand = NULL;
+	before_dollar = NULL;
+	after_dollar = NULL;
+	if (token && ft_strchr(token->value, '$'))
+	{
+		if (token->value[0] == '"')
+			is_s_d_qoute = 2;
+		else if (token->value[0] == '\'')
+			is_s_d_qoute = 1;
+		if (is_s_d_qoute != -1)
+		{
+			if (is_s_d_qoute == 2)
+			{	// before dollar
+				remove_s_d_qoute(&token->value);
+				tmp = token->value;
+				while (tmp[i] && tmp[i] != '$')
+					i++;
+				before_dollar = ft_substr(token->value, 0, i);
+				to_expand = ft_substr(token->value, get_char_position(token->value, '$'), len_str_to_expand(token->value));
+				expand(&to_expand);
+				before_dollar = ft_strjoin(before_dollar, to_expand);
+				after_dollar = ft_substr(tmp, i + len_str_to_expand(token->value), ft_strlen(tmp) - i + len_str_to_expand(token->value));
+				after_dollar = ft_strjoin(before_dollar, after_dollar);
+				return (after_dollar);
+			}
+		}
+	}
+	return (NULL);
 }
 
 void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
@@ -132,24 +204,45 @@ void cmd_args_file(token_t *token_cmd, char **cmd_args, char **symb_file)
 			}
 			else if (token_cmd)
 			{
+				char	*result;
+				while (token_cmd && (token_cmd->type == 5 || token_cmd->type == 6))
+				{
+					result = expand_with_quote(token_cmd);
+					//$ + quote
+					if (result)
+					{
+						token_cmd->value = result;
+						break;
+						//token_cmd->value = ft_strjoin(token_cmd->value, expand_with_quote(token_cmd));
+					}
+					else
+					{
+						remove_s_d_qoute(&token_cmd->value);
+						printf("%s\n", token_cmd->value);
+					}
+					token_cmd = token_cmd->next;
+				}
+				expand(&(token_cmd)->value);
 				if (flag == 0 )
 				{
-					expand(&token_cmd->value);
-					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&symb_fl, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
 				else if (flag == 1|| flag == -1)
 				{
-					expand(&token_cmd->value);
-					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&cmd_arg, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
+
+					//printf(" ss  %s\n",token_cmd->value);
+
+
 			}
 		}
 		*cmd_args = tokens_cmd_to_string(cmd_arg);
 		*symb_file = tokens_cmd_to_string(symb_fl);
+		printf("   %s\n",*cmd_args);
+		printf("   %s\n",*symb_file);
 	}
 }
 
@@ -289,208 +382,6 @@ t_list *store_one_cmd(token_t **tokens, char *symb)
 	return (lst);
 }
 
-int pipe_error(token_t *tokens, token_t *prev)
-{
-	char	*buffer;
-
-	buffer = NULL;
-	if (tokens)
-	{
-		tokens = tokens->next;
-		if (!prev)
-		{
-			buffer =  ft_strdup("syntax error near unexpected token `|");
-			if (tokens && tokens->value[0] == '|')
-			{
-				buffer = ft_strjoin(buffer, "|");
-				tokens = tokens->next;
-			}
-			buffer = ft_strjoin(buffer, "'");
-			print_cmd_error(NULL, NULL, buffer, 258);
-			return (1);
-		}
-		else
-		{
-			while (tokens && tokens->type == 4)
-				tokens = tokens->next;
-			if (!tokens || (tokens && tokens->type == 2))
-			{
-				print_cmd_error(NULL, NULL, ft_strdup("syntax error near unexpected token `|'"), 258);
-				return (1);
-			}
-		}
-	}
-	return (0);
-}
-
-int qoute_error(token_t *token)
-{
-	if (token)
-	{
-		if (ft_strlen(token->value) == 1)
-		{
-			print_cmd_error(NULL, NULL, "syntax error", 1);
-			return (1);
-		}
-		else if (token->value[ft_strlen(token->value) - 1] != token->value[0])
-		{
-			print_cmd_error(NULL, NULL, "syntax error", 1);
-			return (1);
-		}
-	}
-	return (0);
-}
-
-int redir_in_error(token_t *token)
-{
-	int		i;
-	int		flag;
-	char	*buffer;
-
-	i = 0;
-	flag = -1;
-	buffer = ft_strdup("");
-	if (token)
-	{
-		token = token->next;
-		if (token && (token->type == 0))
-		{
-			token = token->next;
-			flag = 0;
-		}
-		if (token && (token->type == 0))
-			token = token->next;
-		while (token && token->type == 4)
-			token = token->next;
-		if (!token || (token && flag && token->type == 1))
-		{
-			print_cmd_error(NULL, NULL, "syntax error near unexpected token `newline'", 258);
-			return (1);
-		}
-		else if (token->type == 0 || token->type == 1 || token->type == 2)
-		{
-			buffer = "syntax error near unexpected token `";
-			while (token && ((token->type == 0 && i < 3) || (token->type == 1 && i < 2)))
-			{
-				buffer = ft_strjoin(buffer, token->value);
-				token = token->next;
-				i++;
-			}
-			if (token && token->type == 2)
-				buffer = ft_strjoin(buffer, token->value);
-			print_cmd_error(NULL, NULL, ft_strjoin(buffer, "'"), 258);
-			return (1);
-		}
-	}
-	return (0);
-}
-
-int redir_out_error(token_t *token)
-{
-	int		i;
-	char	*buffer;
-
-	i = 0;
-	buffer = ft_strdup("");
-	if (token)
-	{
-		token = token->next;
-		if (token && token->type == 2)
-		{
-			token = token->next;
-			while (token && token->type == 4)
-				token = token->next;
-			if (!token)
-			{
-				print_cmd_error(NULL, NULL, "syntax error near unexpected token `newline'", 258);
-				return (1);
-			}
-			return (0);
-		}
-		if (token && token->type == 1)
-			token = token->next;
-		while (token && token->type == 4)
-			token = token->next;
-		if (token && (token->type == 0 || token->type == 1 || token->type == 2))
-		{
-			buffer = "syntax error near unexpected token `";
-			while (token && ((i < 2 && (token->type == 2 || token->type == 1))
-				|| (i < 3 && token->type == 0)))
-			{
-				buffer = ft_strjoin(buffer, token->value);
-				token = token->next;
-				i++;
-			}
-			print_cmd_error(NULL, NULL, ft_strjoin(buffer, "'"), 258);
-			return (1);
-		}
-		if (!token)
-		{
-			print_cmd_error(NULL, NULL, "syntax error near unexpected token `newline'", 258);
-			return (1);
-		}
-	}
-	return (0);
-}
-
-int redir_error(token_t *token, int type)
-{
-	if (token)
-	{
-		if (type == 0 && redir_in_error(token))
-			return (1);
-		else if (type == 1 && redir_out_error(token))
-			return (1);
-	}
-	return (0);
-}
-
-void	check_parsing_error(token_t *tokens, int *flg_err)
-{
-	token_t *prev;
-
-	prev = NULL;
-	if (tokens)
-	{
-		while (tokens)
-		{
-			if (tokens->type == 3)
-				prev = tokens;
-			else if (tokens->value[0] == '|')
-			{
-				*flg_err = pipe_error(tokens, prev);
-				if (*flg_err)
-					break;
-			}
-			else if (tokens->value[0] == '<')
-			{
-				*flg_err = redir_error(tokens , 0);
-				if (*flg_err)
-					break;
-			}
-			else if (tokens->value[0] == '>')
-			{
-				*flg_err = redir_error(tokens , 1);
-				if (*flg_err)
-					break;
-			}
-			else if (tokens->type == 5 || tokens->type == 6)
-			{
-				*flg_err = qoute_error(tokens);
-				if (*flg_err)
-					break;
-			}
-			//------ todo--------------------------
-			// else if (tokens->type == 7)
-			// {
-
-			// }
-			tokens = tokens->next;
-		}
-
-	}
-}
-
 char	*remove_char_from_str(char *buffer, char c)
 {
 	int		i;
@@ -510,8 +401,6 @@ char	*remove_char_from_str(char *buffer, char c)
 	return (str);
 }
 
-
-
 t_list	*parser(char *line, int *flg_err)
 {
 	lexer_t	*lexer;
@@ -529,6 +418,8 @@ t_list	*parser(char *line, int *flg_err)
 	check_parsing_error(token, flg_err);
 	lst = store_one_cmd(&token, symb);
 	herdoc(lst);
+	exit(1);
+	//printf("%d\n", g_data.status_code);
 	return (lst);
 }
 
