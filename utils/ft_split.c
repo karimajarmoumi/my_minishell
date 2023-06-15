@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 20:03:47 by kel-baam          #+#    #+#             */
-/*   Updated: 2022/10/23 23:07:25 by kel-baam         ###   ########.fr       */
+/*   Updated: 2023/06/15 12:35:05 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 #include "../minishell.h"
 
 static int	len_words(char const *s, char c)
@@ -67,6 +69,36 @@ static char	*allocate_word(char const *s, char c, int *index)
 	}
 	return (ft_substr(s, start, *index - start));
 }
+
+// static char	*allocate_word(char const *s, char c, int *index)
+// {
+// 	int	start;
+// 	int	flag;
+// 	int	tmp;
+
+// 	start = 0;
+// 	flag = 0;
+// 	while (s[*index])
+// 	{
+// 		if (s[*index] == c)
+// 		{
+// 			if (s[*index - 1] != c)
+// 				tmp = *index;
+// 			if (flag == 1)
+// 				break ;
+// 			(*index)++;
+// 			flag = 0;
+// 		}
+// 		else
+// 		{
+// 			if (!flag)
+// 				start = tmp;
+// 			flag = 1;
+// 			(*index)++;
+// 		}
+// 	}
+// 	return (ft_substr(s, start, *index - start));
+// }
 
 static void	free_memory(char **str, int len)
 {

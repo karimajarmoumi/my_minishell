@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 10:29:26 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/05/03 10:29:29 by kel-baam         ###   ########.fr       */
+/*   Updated: 2023/06/15 12:35:29 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../minishell.h"
 
+#include "../minishell.h"
 char	*get_right_path(char *cmd, t_command *data)
 {
 	int		i;

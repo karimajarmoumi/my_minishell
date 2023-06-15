@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 10:29:18 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/09 18:36:40 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/15 22:05:25 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,9 @@ void	executer(t_list *commands)
 	tmp = commands;
 	i = 0;
 	last_fd = STDIN_FILENO;
+	int x=0;
+
+
 	if (run_builtins(tmp) >= 0)
 		return ;
 	while (tmp)
@@ -123,6 +126,7 @@ void	executer(t_list *commands)
 		{
 			//signals_for_child();
 			//get_inputfile_fd(&last_fd, tmp_command->redir_in, fds[1], fds[0]);
+
 			get_outfile_fd(&fds[1], tmp_command->redir_out);
 			signals_for_child();
 			if (get_inputfile_fd(&last_fd, tmp_command->redir_in) == 1)

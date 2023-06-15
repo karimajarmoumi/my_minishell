@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 15:05:08 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/05/24 15:05:11 by kel-baam         ###   ########.fr       */
+/*   Updated: 2023/06/15 18:59:06 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int	check_option(char *str)
@@ -45,6 +46,7 @@ int	ft_echo(t_command *command)
 	start = i;
 	while (command->args[i])
 	{
+		//printf("%s\n",command->args[i]);
 		if (i != start)
 			printf(" ");
 		printf("%s", command->args[i]);
