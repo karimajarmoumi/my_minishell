@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 10:29:18 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/15 22:05:25 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/16 18:02:41 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,12 @@ char	*get_my_path(t_command *tmp_command)
 {
 	char	*path;
 
+	path = NULL;
 	if (!(tmp_command->cmd))
 		exit(0);
 	if (is_bultin(tmp_command->cmd))
 	{
-		path = get_actual_path(tmp_command->cmd, tmp_command);
+		path = get_actual_path(tmp_command->cmd);
 		if (!path)
 			g_data.status_code = print_cmd_error(tmp_command->cmd, NULL,
 					" command not found", 127);
@@ -82,13 +83,16 @@ int	run_builtins(t_list *commands)
 	outfile = 1;
 	if (commands && !commands->next)
 	{
-		if (tmp_command->cmd && (!strcmp(tmp_command->cmd, "unset")
-				|| !strcmp(tmp_command->cmd, "export")
-				|| !strcmp(tmp_command->cmd, "cd") || !strcmp(tmp_command->cmd,
-					"exit")))
+		if (tmp_command->cmd && (!strcmp(tmp_command->cmd, "unset") || !strcmp(tmp_command->cmd, "export")
+				|| !strcmp(tmp_command->cmd, "cd") || !strcmp(tmp_command->cmd,"exit")))
+
 		{
-			get_inputfile_fd(&infile, tmp_command->redir_in);
-			get_outfile_fd(&outfile, tmp_command->redir_out);
+
+			if(get_inputfile_fd(&infile, tmp_command->redir_in)==1)
+					return 1;
+			if(get_outfile_fd(&outfile, tmp_command->redir_out)==1)
+					return 1;
+
 			g_data.status_code = execute_bultin(tmp_command, outfile);
 			return (g_data.status_code);
 		}
@@ -110,11 +114,9 @@ void	executer(t_list *commands)
 	tmp = commands;
 	i = 0;
 	last_fd = STDIN_FILENO;
-	int x=0;
-
-
-	if (run_builtins(tmp) >= 0)
+	if (run_builtins(tmp) >=0)
 		return ;
+
 	while (tmp)
 	{
 		tmp_command = (t_command *)tmp->content;
@@ -125,10 +127,6 @@ void	executer(t_list *commands)
 		if (!pid)
 		{
 			//signals_for_child();
-			//get_inputfile_fd(&last_fd, tmp_command->redir_in, fds[1], fds[0]);
-
-			get_outfile_fd(&fds[1], tmp_command->redir_out);
-			signals_for_child();
 			if (get_inputfile_fd(&last_fd, tmp_command->redir_in) == 1)
 				exit(g_data.status_code);
 			if (get_outfile_fd(&fds[1], tmp_command->redir_out) == 1)

@@ -11,31 +11,32 @@
 /* ************************************************************************** */
 #include "../../minishell.h"
 
-int	ft_exit(t_command *command)
+
+
+int	ft_exit(t_command *cmd)
 {
 	int				status;
 	int				one_arg;
 	unsigned char	test;
 
-	status = 0;
+	status = 127;
 	one_arg = 1;
 	printf("exit\n");
-	if (command->args[1])
+	if (cmd->args[1])
 	{
-		if ((command->args[1] && is_num(command->args[1]) == -1)
-			|| ft_atoi(command->args[1]) == -1
-			|| ft_atoi(command->args[1]) == 0)
-			status = print_cmd_error(command->cmd, command->args[1],
+		if ((cmd->args[1] && is_num(cmd->args[1]) == -1)
+			|| ft_atoi(cmd->args[1]) == -1 || ft_atoi(cmd->args[1]) == 0)
+			status = print_cmd_error(cmd->cmd, cmd->args[1],
 					"numeric argument required", 255);
-		if (command->args && command->args[2] && !status)
+		if (cmd->args && cmd->args[2] && !status)
 		{
 			one_arg = 0;
-			status = print_cmd_error(command->cmd, NULL, "too many arguments",
+			status = print_cmd_error(cmd->cmd, NULL, "too many arguments",
 					1);
 		}
-		if (command->args[1] && is_num(command->args[1]) >= 0 && one_arg)
+		if (cmd->args[1] && is_num(cmd->args[1]) >= 0 && one_arg)
 		{
-			test = (unsigned char)ft_atoi(command->args[1]);
+			test = (unsigned char)ft_atoi(cmd->args[1]);
 			status = test;
 		}
 	}

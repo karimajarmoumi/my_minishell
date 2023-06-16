@@ -46,7 +46,6 @@ int	ft_echo(t_command *command)
 	start = i;
 	while (command->args[i])
 	{
-		//printf("%s\n",command->args[i]);
 		if (i != start)
 			printf(" ");
 		printf("%s", command->args[i]);

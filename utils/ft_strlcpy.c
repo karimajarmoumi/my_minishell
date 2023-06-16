@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 21:52:05 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/15 22:04:11 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/16 14:04:25 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ char **copy_of_tab(char **str)
 			dest[i]= ft_strdup(str[i]);
 			i++;
 		}
+		dest[i]=NULL;
 	}
 	return dest;
 }

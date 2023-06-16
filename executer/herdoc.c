@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 17:55:58 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/09 17:28:29 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/16 13:43:29 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,11 @@ void	exec_herdoc(char *del, int fd)
 	while (1)
 	{
 		line = readline(CYAN "herdoc >> " RESET);
-		if (!ft_strncmp(del, line, ft_strlen(line)))
+		if ( !line || !ft_strcmp(del, line))
 			break ;
 		expand(&line);
+		if(line[0]=='$')
+			line=ft_strdup("");
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 	}
@@ -53,9 +55,6 @@ void	store_herdoc_fds(t_list *commands_lst)
 
 void	herdoc(t_list *command_lst)
 {
-	int		pid;
-	int		fds[2];
-	int		last_fd;
 	t_list	*tmp_command_lst;
 
 	tmp_command_lst = NULL;

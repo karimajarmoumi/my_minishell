@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 23:26:25 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/15 22:14:25 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/16 20:10:15 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,12 @@ t_list *init_lst()
 void remove_s_d_qoute(char **buffer)
 {
 	char	*tmp;
-
-	tmp = ft_strdup("");
 	if (buffer)
 	{
 		if ((*buffer)[0] == '"' || (*buffer)[0] == '\'')
 		{
 			(*buffer)++;
+			tmp=malloc(sizeof(char)*ft_strlen(*buffer));
 			ft_strlcpy(tmp, *buffer, ft_strlen(*buffer));
 			*buffer = tmp;
 		}
@@ -55,15 +54,39 @@ void remove_s_d_qoute(char **buffer)
 void expand(char **token)
 {
 	char	*result;
-
+	char	*path=NULL;
+	char	*tmp_token;
+	int		pos;
+	int		pos_eg;
 	result = NULL;
 	if (token)
 	{
 		if ((*token)[0] == '$')
 		{
+			tmp_token = (*token);
+			pos = find_egal_position((*token),'/');
+			pos_eg = find_egal_position((*token),'=');
+			if (pos == -1 && pos_eg != -1)
+				pos = pos_eg;
+			else if (pos_eg != -1 && pos != -1 && pos_eg < pos)
+				pos = pos_eg;
+			if (pos != -1 )
+			{
+				*token = ft_substr(*token, 0, pos);
+				path = ft_strdup(&tmp_token[pos]);
+			}
 			result = get_env(&((*token)[1]));
 			if (result)
-				(*token) = result;
+			{
+				if (path)
+					(*token) = ft_strjoin(result, path);
+				else
+					(*token) = result;
+			}
+			else if(pos!=-1)
+				*token=path;
+			else
+				*token = tmp_token;
 		}
 	}
 }
@@ -156,7 +179,7 @@ char **token_cmd_to_args(token_t *token_cmd)
 {
 	token_t *tmp;
 	int		i=0;
-	char **tab = malloc(sizeof(char*) * ft_lstsize_token(token_cmd) + 1);
+	char **tab = malloc(sizeof(char*) * (ft_lstsize_token(token_cmd) + 1));
 	if (token_cmd)
 	{
 		tmp = token_cmd;
@@ -171,11 +194,32 @@ char **token_cmd_to_args(token_t *token_cmd)
 				}
 				tmp = tmp->next;
 			}
-			// printf("I=%d\n", i);
 			tab[i] = NULL;
 		}
 	}
+	else
+		tab[0]=NULL;
 	return tab;
+}
+
+void check_tild(token_t **token_cmd)
+{
+	char	*result;
+
+	if (*token_cmd)
+	{
+		if ((*token_cmd)->value[0] == '~')
+		{
+			if ((*token_cmd)->value[1] == '\0')
+				(*token_cmd)->value = HOME;
+			if ((*token_cmd)->value[1] == ' ' || (*token_cmd)->value[1] == '/')
+			{
+				char *value=ft_strdup(&((*token_cmd))->value[1]);
+				result = ft_strjoin(HOME,value);
+				(*token_cmd)->value = ft_strdup(result);
+			}
+		}
+	}
 }
 
 token_t *cmd_args_file(token_t *token_cmd,  char **symb_file)
@@ -189,8 +233,6 @@ token_t *cmd_args_file(token_t *token_cmd,  char **symb_file)
 	flag = -1;
 	cmd_arg = NULL;
 	symb_fl = NULL;
-	int i = 0;
-	char **tab;
 	if (token_cmd)
 	{
 		while (token_cmd)
@@ -211,10 +253,13 @@ token_t *cmd_args_file(token_t *token_cmd,  char **symb_file)
 					ft_lstadd_back_token(&symb_fl, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
-				while (token_cmd && token_cmd->type == 3)
+				while (token_cmd && (token_cmd->type == 3 || token_cmd->type == 7))
 				{//
+					check_tild(&token_cmd);
+					printf("%s\n",token_cmd->value);
 					expand(&token_cmd->value);
-					remove_s_d_qoute(&token_cmd->value);
+					// remove_s_d_qoute(&token_cmd->value);
+					expand_with_quote(token_cmd);
 					ft_lstadd_back_token(&symb_fl, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
@@ -225,15 +270,15 @@ token_t *cmd_args_file(token_t *token_cmd,  char **symb_file)
 				while (token_cmd && token_cmd->type == 4)
 				{
 					remove_s_d_qoute(&token_cmd->value);
-					//=======
 					ft_lstadd_back_token(&cmd_arg, init_token(token_cmd->value, token_cmd->type));
 					token_cmd = token_cmd->next;
 				}
 			}
 			else if (token_cmd && token_cmd->type == 3)
-			{//
+			{
 				while (token_cmd && token_cmd->type == 3)
 				{
+					check_tild(&token_cmd);
 					expand(&token_cmd->value);
 					remove_s_d_qoute(&token_cmd->value);
 					ft_lstadd_back_token(&cmd_arg, init_token(token_cmd->value, token_cmd->type));
@@ -264,18 +309,15 @@ token_t *cmd_args_file(token_t *token_cmd,  char **symb_file)
 					expand(&token_cmd->value);
 				if (flag == 0)
 					ft_lstadd_back_token(&symb_fl, init_token(token_cmd->value, token_cmd->type));
-				else if (flag == 1 || flag == -1)
+				else if (flag == 1|| flag == -1)
 					ft_lstadd_back_token(&cmd_arg, init_token(token_cmd->value, token_cmd->type));
 				token_cmd = token_cmd->next;
 			}
 		}
+	*symb_file = tokens_cmd_to_string(symb_fl);
 	}
-		*symb_file = tokens_cmd_to_string(symb_fl);
-
 	return (cmd_arg);
 }
-
-
 
 t_command *insert_one_cmd(char **cmd_args, char *symb_file)
 {
@@ -293,15 +335,17 @@ t_command *insert_one_cmd(char **cmd_args, char *symb_file)
 	new->redir_in = malloc(sizeof(t_list));
 	lst_redir_in = NULL;
 	lst_redir_out = NULL;
-	if (cmd_args)
+
+	if (cmd_args && *cmd_args)
 	{
 		new->args = copy_of_tab(cmd_args);
-		new->cmd = new->args[0];
+		new->cmd = ft_strdup(new->args[0]);
 	}
 	else
 	{
-		new->args[0] = NULL;
-		new->cmd = NULL;
+		new->args=malloc(sizeof(char*));
+		new->args[0] =ft_strdup("");
+		new->cmd = ft_strdup("");
 	}
 	while (symb_file && symb_file[i])
 	{
@@ -353,12 +397,6 @@ t_command *insert_one_cmd(char **cmd_args, char *symb_file)
 		}
 		flag = -1;
 	}
-		// int j = 0;
-		// 	while (new->args[j])
-		// 	{
-		// 		printf("p----%s\n",new->args[j]);
-		// 		j++;
-		// 	}
 	new->redir_in =  lst_redir_in;
 	new->redir_out = lst_redir_out;
 	return (new);
@@ -382,14 +420,7 @@ t_list *store_one_cmd(token_t **tokens, char *symb)
 			cmd_arg = cmd_args_file(tokens_cmd, &symb_file);
 			tab = token_cmd_to_args(cmd_arg);
 
-			// t_list *var;
-			// var = malloc(sizeof(t_list));
-			// var->content = (t_list *)insert_one_cmd(tab, symb_file);
-			// var->next = NULL;
-
 			ft_lstadd_back(&lst, ft_lstnew(insert_one_cmd(tab, symb_file)));
-			//printf("hh %s\n",lst->)
-			//cmd_args = NULL;
 			symb_file = NULL;
 			tokens_cmd = tokens_of_one_command(tokens);
 		}
@@ -457,18 +488,13 @@ t_list	*parser(char *line, int *flg_err)
 	t_list	*lst;
 
 	lexer = init_lexer(line);
-	symb = malloc(3);
-	types = malloc(9);
-	symb = "<>";
-	types = "<>| '\"$";
+	symb = ft_strdup("<>");
+	types = ft_strdup("<>| '\"$");
 	token = get_all_tokens(lexer, types);
-
 	check_parsing_error(token, flg_err);
 	lst = store_one_cmd(&token, symb);
-
 	herdoc(lst);
-	exit(1);
-	//printf("%d\n", g_data.status_code);
+	if(*flg_err==1)
+	 	add_node(&(g_data.env_vars), "?", ft_itoa(g_data.status_code),NULL);
 	return (lst);
 }
-

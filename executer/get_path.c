@@ -6,12 +6,12 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 10:29:26 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/15 12:35:29 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/16 18:09:22 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-char	*get_right_path(char *cmd, t_command *data)
+char	*get_right_path(char *cmd)
 {
 	int		i;
 	char	*absolute_path;
@@ -40,16 +40,35 @@ char	*get_right_path(char *cmd, t_command *data)
 	return (absolute_path);
 }
 
-char	*get_actual_path(char *cmd, t_command *data)
+char	*get_actual_path(char *cmd)
 {
 	int	status;
 
 	status = 127;
+	if(ft_strchr(cmd, '/') && access(cmd, F_OK))
+	{
+		print_cmd_error(cmd, NULL, strerror(errno),
+				status);
+		exit(status);
+
+	}
 	if (!access(cmd, F_OK))
 	{
+		if(opendir(cmd))
+		{
+			print_cmd_error(cmd,NULL,"is a directory",126);
+			exit(126);
+		}
 		if (!access(cmd, X_OK))
 			return (ft_strdup(cmd));
-		status = 126;
+		else
+		{
+			print_cmd_error(cmd,NULL,strerror(errno),126);
+			exit(126);
+		}
 	}
-	return (get_right_path(cmd, data));
+
+
+	return (get_right_path(cmd));
 }
+//minishell.c cmd not found

@@ -3,21 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 16:27:09 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/05/18 16:27:11 by kel-baam         ###   ########.fr       */
+/*   Updated: 2023/06/16 19:02:00 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../minishell.h"
+
 
 //final version
-
+#include "../../minishell.h"
 void	inorder_traversal(t_node *head, int fd)
 {
 	char	qoute;
 
 	if (head == NULL)
+		return ;
+	if(!ft_strncmp(head->key,"?",ft_strlen(head->key)))
 		return ;
 	qoute = '"';
 	inorder_traversal(head->left, fd);
@@ -52,33 +54,37 @@ void	add_new_value(int pos, char *arg, char **value, char **key)
 		old_value = ft_strdup("");
 	*value = ft_strjoin(old_value, new_value);
 }
+// error message +=ll
 int	add_new_element(t_command *cmd)
 {
 	int		i;
 	int		pos;
-	char	*key;
+	char	*key=ft_strdup("");
 	char	*value;
-	int		status;
 	int		flag;
 
 	flag = 0;
-	status = 0;
+	g_data.status_code = 0;
 	i = 1;
 	while (cmd->args && cmd->args[i])
 	{
-		pos = find_char(cmd->args[i], '=');
-		if (cmd->args[i][pos - 1] == '+')
+		pos = find_egal_position(cmd->args[i], '=');
+		if (cmd->args[i] && pos >0 && cmd->args[i][pos - 1] == '+')
 			flag = 1;
 		if (pos == -1)
 		{
 			key = cmd->args[i];
 			value = NULL;
 		}
-		key = ft_substr(cmd->args[i], 0, pos);
-		value = ft_substr(cmd->args[i], pos + 1, ft_strlen(cmd->args[i]));
+		if(!flag && pos >0)
+			key = ft_substr(cmd->args[i], 0, pos);
+		else
+			key=cmd->args[i];
+		if(pos >=0)
+			value = ft_substr(cmd->args[i], pos + 1, ft_strlen(cmd->args[i]));
 		if (is_valid_key(key) == -1)
 		{
-			status = print_cmd_error(cmd->cmd, key, "not a valid identifier",
+			g_data.status_code = print_cmd_error(cmd->cmd, key, "not a valid identifier",
 					1);
 			i++;
 			continue ;
@@ -90,13 +96,13 @@ int	add_new_element(t_command *cmd)
 		ft_free(value);
 		i++;
 	}
-	return (status);
+	return (g_data.status_code);
 }
 
 int	ft_export(t_command *command, int fd)
 {
 	int	i;
-	int	status;
+	int	status=0;
 
 	i = 1;
 	if (command->args && command->args[i])

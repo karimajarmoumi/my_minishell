@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   file_management.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 10:36:11 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/05 10:36:13 by kel-baam         ###   ########.fr       */
+/*   Updated: 2023/06/16 15:51:46 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../minishell.h"
 
+#include "../minishell.h"
 int	get_outfile_fd(int *fd, t_list *file_list)
 {
 	t_list	*tmp;
@@ -21,8 +21,13 @@ int	get_outfile_fd(int *fd, t_list *file_list)
 	{
 		tmp_redir = (t_red *)tmp->content;
 		if (tmp_redir->flag)
+		{
+			if (((char *)tmp_redir->file_name)[0] == '$')
+				return (print_cmd_error(tmp_redir->file_name, NULL,
+						"ambiguous redirect", 1));
 			*fd = open(tmp_redir->file_name, O_WRONLY | O_CREAT | O_TRUNC,
 					0644);
+		}
 		else
 			*fd = open(tmp_redir->file_name, O_WRONLY | O_CREAT | O_APPEND,
 					0644);
@@ -45,6 +50,9 @@ int	get_inputfile_fd(int *last_fd, t_list *redir_in)
 	while (tmp_redir_in)
 	{
 		tmp = (t_red *)tmp_redir_in->content;
+		if (((char *)tmp->file_name)[0] == '$')
+			return (print_cmd_error(tmp->file_name, NULL, "ambiguous redirect",
+					1));
 		if (tmp->flag == 1)
 			*(last_fd) = open(tmp->file_name, O_RDONLY, 0644);
 		if (*(last_fd) == -1)
@@ -70,7 +78,10 @@ void	duplicate_fds(t_list *tmp, int last_fd, int *fds)
 		close(last_fd);
 	}
 	if (tmp->next || tmp_command->redir_out)
+	{
 		dup2(fds[1], STDOUT_FILENO);
 	close(fds[1]);
 	close(fds[0]);
+
+	}
 }

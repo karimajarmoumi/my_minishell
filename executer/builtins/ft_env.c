@@ -16,6 +16,8 @@ void	preorder_traversal(t_node *head, int fd)
 {
 	if (head == NULL)
 		return ;
+	if(!ft_strncmp(head->key,"?",ft_strlen(head->key)))
+		return;
 	if (head->value)
 	{
 		write(fd, head->key, ft_strlen(head->key));

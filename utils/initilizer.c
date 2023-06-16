@@ -21,14 +21,15 @@ void	init_envs(char **envs)
 	i = 0;
 	while (envs[i])
 	{
-		pos = find_char(envs[i], '=');
+		pos = find_egal_position(envs[i], '=');
 		key = ft_substr(envs[i], 0, pos);
 		value = ft_substr(envs[i], pos + 1, ft_strlen(envs[i]));
 		add_node(&(g_data.env_vars), key, value, NULL);
-		free(key);
-		free(value);
+		ft_free(key);
+		ft_free(value);
 		i++;
 	}
+	add_node(&(g_data.env_vars), "?", ft_itoa(g_data.status_code), NULL);
 }
 
 void	initilizer(char **envs)

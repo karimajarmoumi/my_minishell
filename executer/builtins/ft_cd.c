@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 15:04:48 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/05/24 15:04:53 by kel-baam         ###   ########.fr       */
+/*   Updated: 2023/06/16 15:06:40 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../minishell.h"
 
+#include "../../minishell.h"
 int	get_old_position(char **arg, char *cmd)
 {
 	char	*prev;
@@ -38,7 +38,6 @@ int	ft_cd(t_command *cmd)
 {
 	char	old_pwd[1024];
 	char	current_pwd[1024];
-	char	*target;
 
 	if (cmd->args[1] && cmd->args[1][0] == '~')
 		cmd->args[1] = ft_strjoin(HOME, &cmd->args[1][1]);
