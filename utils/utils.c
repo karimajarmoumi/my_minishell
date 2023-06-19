@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 10:30:15 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/16 19:21:20 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/18 20:09:01 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int	print_cmd_error(char *cmd, char *args, char *msg_err, int status_code)
 	}
 	if (args)
 	{
-
 		write(STDERR_FILENO, args, ft_strlen(args));
 		write(STDERR_FILENO, ": ", 2);
 	}
@@ -43,21 +42,20 @@ void	free_double_ptr(char **ptr)
 	i = 0;
 	if (ptr)
 	{
-		if(*ptr)
+		if (*ptr)
 		{
-
-		while (ptr[i])
-		{
-			free(ptr[i]);
-			ptr[i] = NULL;
-			i++;
-		}
-			//free(ptr);
+			while (ptr[i])
+			{
+				free(ptr[i]);
+				ptr[i] = NULL;
+				i++;
+			}
+			free(ptr);
 		}
 	}
 }
 
-int	find_egal_position(char *str, char c)
+int	searching_for_char(char *str, char c)
 {
 	int	i;
 
@@ -87,7 +85,7 @@ void	free_node(t_node **node)
 	(*node)->value = NULL;
 	(*node)->parent = NULL;
 	(*node)->left = NULL;
-	(*node)->value = NULL;
+
 	ft_free(*node);
 	*node = NULL;
 }

@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 15:33:06 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/07 11:03:58 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/18 22:26:09 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@
 # include <stdlib.h>
 # include <fcntl.h>
 
-typedef struct lexer_s
+typedef struct s_lexer
 {
 	char	c;
 	size_t	i;
 	char	*content;
-} lexer_t;
+} t_lexer;
 
-lexer_t		*init_lexer(char *content);
-int			lexer_advance(lexer_t *lexer);
-int			lexer_skip_whitespace(lexer_t *lexer);
+t_lexer		*init_lexer(char *content);
+int			lexer_advance(t_lexer *lexer);
+int			lexer_skip_whitespace(t_lexer *lexer);
 
 #endif

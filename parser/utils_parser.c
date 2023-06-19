@@ -6,29 +6,19 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 15:09:24 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/14 17:25:52 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/19 01:11:45 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../minishell.h"
+#include "cmd.h"
 #include "lexer.h"
 #include "token.h"
-#include "cmd.h"
-#include "../minishell.h"
 
-token_t	*ft_lstlast_token(token_t *lst)
-{
-	if (!lst)
-		return (NULL);
-	while (lst->next)
-	{
-		lst = lst->next;
-	}
-	return (lst);
-}
 
-void	ft_lstadd_back_token(token_t **lst, token_t *new)
+void	ft_lstadd_back_token(t_token **lst, t_token *new)
 {
-	token_t	*last_node;
+	t_token 	*last_node;
 
 	if (lst)
 	{
@@ -42,10 +32,10 @@ void	ft_lstadd_back_token(token_t **lst, token_t *new)
 	}
 }
 
-token_t *copy_of_list(token_t *original, int size)
+t_token 	*copy_of_list(t_token *original, int size)
 {
 	int		i;
-	token_t *copy;
+	t_token 	*copy;
 
 	i = 0;
 	copy = NULL;
@@ -53,7 +43,8 @@ token_t *copy_of_list(token_t *original, int size)
 	{
 		while (original && i < size)
 		{
-			ft_lstadd_back_token(&copy, init_token(original->value, original->type));
+			ft_lstadd_back_token(&copy, init_token(original->value,
+					original->type));
 			original = original->next;
 			i++;
 		}
@@ -61,9 +52,9 @@ token_t *copy_of_list(token_t *original, int size)
 	return (copy);
 }
 
-int	number_of_tokens_before_pipe(token_t *token)
+int	number_of_tokens_before_pipe(t_token *token)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (token)
@@ -77,20 +68,19 @@ int	number_of_tokens_before_pipe(token_t *token)
 	return (i);
 }
 
-token_t *tokens_of_one_command(token_t **token)
+t_token 	*tokens_of_one_command(t_token **token)
 {
 	int		i;
 	int		count_token;
-	token_t *tokens_cmd;
+	t_token 	*tokens_cmd;
 
 	i = 0;
 	tokens_cmd = NULL;
-
 	if (token && *token)
 	{
 		count_token = number_of_tokens_before_pipe(*token);
-		tokens_cmd = copy_of_list(*token ,count_token);
-		while (*token  && i <= count_token)
+		tokens_cmd = copy_of_list(*token, count_token);
+		while (*token && i <= count_token)
 		{
 			*token = (*token)->next;
 			i++;
@@ -99,9 +89,9 @@ token_t *tokens_of_one_command(token_t **token)
 	return (tokens_cmd);
 }
 
-char	*tokens_cmd_to_string(token_t *token)
+char	*tokens_cmd_to_string(t_token *token)
 {
-	char	*buffer;
+	char *buffer;
 
 	buffer = ft_strdup("");
 	if (token)

@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 18:39:02 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/08 18:51:25 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/19 01:08:19 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "lexer.h"
 
-typedef struct token_s
+typedef struct s_token
 {
 	char			*value;
 	enum
@@ -29,15 +29,15 @@ typedef struct token_s
 		token_d_qoute, // 6
 		token_dollar   // 7
 	} type;
-	struct token_s	*next;
-}					token_t;
+	struct s_token	*next;
+}					t_token;
 
-token_t				*init_token(char *value, int type);
-token_t				*get_one_token(lexer_t *lexer, char *types);
-token_t				*get_all_tokens(lexer_t *lexer, char *types);
-token_t				*tokens(token_t **token);
-void				ft_lstadd_back_token(token_t **lst, token_t *new);
-token_t				*ft_lstlast_token(token_t *lst);
+t_token 				*init_token(char *value, int type);
+t_token 				*get_one_token(t_lexer *lexer, char *types);
+t_token 				*get_all_tokens(t_lexer *lexer, char *types);
+t_token 				*tokens(t_token **token);
+void				ft_lstadd_back_token(t_token **lst, t_token *new);
+t_token 				*ft_lstlast_token(t_token *lst);
 char				*char_to_string(char c);
 
 #endif

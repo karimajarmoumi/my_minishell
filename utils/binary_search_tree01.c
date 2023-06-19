@@ -41,8 +41,7 @@ void	add_node(t_node **head, char *key, char *value, t_node *parent)
 		g_data.count_envs++;
 		return ;
 	}
-	//strncmp
-	cmp = strcmp(key, tmp->key);
+	cmp = ft_strcmp(key, tmp->key);
 	if (!cmp)
 	{
 		ft_free(tmp->value);

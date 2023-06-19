@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 #include "../../minishell.h"
 
-
-
 int	ft_exit(t_command *cmd)
 {
 	int				status;
@@ -21,18 +19,16 @@ int	ft_exit(t_command *cmd)
 
 	status = 127;
 	one_arg = 1;
-	printf("exit\n");
 	if (cmd->args[1])
 	{
 		if ((cmd->args[1] && is_num(cmd->args[1]) == -1)
 			|| ft_atoi(cmd->args[1]) == -1 || ft_atoi(cmd->args[1]) == 0)
 			status = print_cmd_error(cmd->cmd, cmd->args[1],
-					"numeric argument required", 255);
+				"numeric argument required", 255);
 		if (cmd->args && cmd->args[2] && !status)
 		{
 			one_arg = 0;
-			status = print_cmd_error(cmd->cmd, NULL, "too many arguments",
-					1);
+			status = print_cmd_error(cmd->cmd, NULL, "too many arguments", 1);
 		}
 		if (cmd->args[1] && is_num(cmd->args[1]) >= 0 && one_arg)
 		{

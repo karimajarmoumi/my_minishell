@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../minishell.h"
+
 void	exec_herdoc(char *del, int fd)
 {
 	char	*line;
@@ -19,11 +19,11 @@ void	exec_herdoc(char *del, int fd)
 	while (1)
 	{
 		line = readline(CYAN "herdoc >> " RESET);
-		if ( !line || !ft_strcmp(del, line))
+		if (!line || !ft_strcmp(del, line))
 			break ;
 		expand(&line);
-		if(line[0]=='$')
-			line=ft_strdup("");
+		if (line[0] == '$')
+			line = ft_strdup("");
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 	}
@@ -37,7 +37,7 @@ void	store_herdoc_fds(t_list *commands_lst)
 	t_red		*red;
 
 	commands = (t_command *)commands_lst->content;
-	tmp_redir = commands->redir_in;
+	tmp_redir = commands->redir_in_out;
 	while (tmp_redir)
 	{
 		red = (t_red *)tmp_redir->content;
@@ -46,7 +46,7 @@ void	store_herdoc_fds(t_list *commands_lst)
 			if (pipe(fds) == -1)
 				print_cmd_error(commands->cmd, NULL, strerror(errno), 1);
 			exec_herdoc(red->file_name, fds[1]);
-			red->flag = fds[0];
+			red->fd_herdoc = fds[0];
 			close(fds[1]);
 		}
 		tmp_redir = tmp_redir->next;

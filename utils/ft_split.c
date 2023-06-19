@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../minishell.h"
 
 static int	len_words(char const *s, char c)
@@ -69,36 +68,6 @@ static char	*allocate_word(char const *s, char c, int *index)
 	}
 	return (ft_substr(s, start, *index - start));
 }
-
-// static char	*allocate_word(char const *s, char c, int *index)
-// {
-// 	int	start;
-// 	int	flag;
-// 	int	tmp;
-
-// 	start = 0;
-// 	flag = 0;
-// 	while (s[*index])
-// 	{
-// 		if (s[*index] == c)
-// 		{
-// 			if (s[*index - 1] != c)
-// 				tmp = *index;
-// 			if (flag == 1)
-// 				break ;
-// 			(*index)++;
-// 			flag = 0;
-// 		}
-// 		else
-// 		{
-// 			if (!flag)
-// 				start = tmp;
-// 			flag = 1;
-// 			(*index)++;
-// 		}
-// 	}
-// 	return (ft_substr(s, start, *index - start));
-// }
 
 static void	free_memory(char **str, int len)
 {

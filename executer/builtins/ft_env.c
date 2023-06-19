@@ -16,8 +16,8 @@ void	preorder_traversal(t_node *head, int fd)
 {
 	if (head == NULL)
 		return ;
-	if(!ft_strncmp(head->key,"?",ft_strlen(head->key)))
-		return;
+	if (!ft_strncmp(head->key, "?", ft_strlen(head->key)))
+		return ;
 	if (head->value)
 	{
 		write(fd, head->key, ft_strlen(head->key));
@@ -62,22 +62,14 @@ char	**store_envs(t_node *head, char **envs, int *i)
 	envs[*i] = malloc((len_key + len_value + 2) * sizeof(char));
 	if (!envs[*i])
 		return (NULL);
-	j = 0;
-	while (j < len_key)
-	{
+	j = -1;
+	while (++j < len_key)
 		envs[*i][j] = head->key[j];
-		j++;
-	}
 	envs[*i][j] = '=';
 	j++;
-	k = 0;
+	k = -1;
 	while (j < len_key + len_value + 1)
-	{
-		envs[*i][j] = head->value[k];
-		k++;
-		j++;
-	}
-
+		envs[*i][j++] = head->value[++k];
 	envs[*i][j] = '\0';
 	(*i)++;
 	envs = store_envs(head->left, envs, i);

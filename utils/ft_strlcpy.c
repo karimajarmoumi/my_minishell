@@ -29,26 +29,27 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 	return (ft_strlen(src));
 }
 
-
-char **copy_of_tab(char **str)
+char	**copy_of_tab(char **str)
 {
+	int		len;
+	int		i;
+	char	**dest;
 
-	int len=0;
-	int i=0;
-	char **dest;
-	if(!str || !*str)
-		return NULL;
-	while(str[len])
+	i = 0;
+	len = 0;
+	if (!str || !*str)
+		return (NULL);
+	while (str[len])
 		len++;
-	dest=malloc(sizeof(char *) *(len +1));
-	if(dest)
+	dest = malloc(sizeof(char *) * (len + 1));
+	if (dest)
 	{
-		while(str[i])
+		while (str[i])
 		{
-			dest[i]= ft_strdup(str[i]);
+			dest[i] = ft_strdup(str[i]);
 			i++;
 		}
-		dest[i]=NULL;
+		dest[i] = NULL;
 	}
-	return dest;
+	return (dest);
 }

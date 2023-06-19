@@ -6,20 +6,19 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 17:02:55 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/06 16:57:59 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/18 18:20:17 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cmd.h"
 #include "token.h"
 #include "lexer.h"
-#include "tree.h"
 #include "../minishell.h"
 
-int count_token_cmd(token_t *token)
+int count_token_cmd(t_token *token)
 {
 	int		i;
-	token_t *tmp;
+	t_token *tmp;
 
 	i = 0;
 	tmp = token;

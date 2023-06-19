@@ -1,29 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   utils_export.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/17 13:54:12 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/17 13:54:15 by kel-baam         ###   ########.fr       */
+/*   Created: 2023/06/18 16:08:58 by kel-baam          #+#    #+#             */
+/*   Updated: 2023/06/18 16:09:02 by kel-baam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
-int	ft_strcmp(char *s1, char *s2)
+int	check_err(char *key, char *cmd, int *i)
 {
-	int	i;
-
-	i = 0;
-	if (!s1 || !s2)
-		return (1);
-	while (s1[i] || s2[i])
+	if (is_valid_key(key) == -1)
 	{
-		if (s1[i] - s2[i] != 0)
-			return (s1[i] - s2[i]);
-		i++;
+		g_data.status_code = print_cmd_error(cmd, key, "not a valid identifier",
+            1);
+		(*i)++;
+		return (-1);
 	}
 	return (0);
+}
+
+void	init_value(int *pos, int *flag, int *i, int *status)
+{
+	*pos = 0;
+	*flag = 0;
+	*i = 0;
+	*status = 0;
+}
+
+void	my_free(char *value, char *key)
+{
+	ft_free(key);
+	ft_free(value);
 }

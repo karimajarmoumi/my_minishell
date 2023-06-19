@@ -18,17 +18,21 @@ int	check_option(char *str)
 
 	i = 0;
 	if (str[i] == '-')
-		i++;
-	while (str[i])
 	{
-		if (str[i] != 'n')
-			return (-1);
 		i++;
+		while (str[i])
+		{
+			if (str[i] != 'n')
+				return (-1);
+			i++;
+		}
 	}
+	else
+		i = -1;
 	return (i);
 }
 
-int	ft_echo(t_command *command)
+int	ft_echo(t_command *command, int fd)
 {
 	int	i;
 	int	option;
@@ -37,8 +41,8 @@ int	ft_echo(t_command *command)
 	i = 1;
 	option = 0;
 	if (!command->args[1])
-		printf("\n");
-	while (command->args && check_option(command->args[i]) != -1)
+		write(fd, "\n", 1);
+	while (command->args[i] && check_option(command->args[i]) != -1)
 	{
 		option = 1;
 		i++;
@@ -48,10 +52,10 @@ int	ft_echo(t_command *command)
 	{
 		if (i != start)
 			printf(" ");
-		printf("%s", command->args[i]);
+		write(fd, command->args[i], ft_strlen(command->args[i]));
 		i++;
 	}
 	if (!option)
-		printf("\n");
+		write(fd, "\n", 1);
 	return (0);
 }

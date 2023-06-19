@@ -83,16 +83,14 @@ int	run_builtins(t_list *commands)
 	outfile = 1;
 	if (commands && !commands->next)
 	{
-		if (tmp_command->cmd && (!strcmp(tmp_command->cmd, "unset") || !strcmp(tmp_command->cmd, "export")
-				|| !strcmp(tmp_command->cmd, "cd") || !strcmp(tmp_command->cmd,"exit")))
-
+		if (tmp_command->cmd && (!ft_strcmp(tmp_command->cmd, "unset")
+				|| !ft_strcmp(tmp_command->cmd, "export")
+				|| !ft_strcmp(tmp_command->cmd, "cd")
+				|| !ft_strcmp(tmp_command->cmd, "exit")))
 		{
-
-			if(get_inputfile_fd(&infile, tmp_command->redir_in)==1)
-					return 1;
-			if(get_outfile_fd(&outfile, tmp_command->redir_out)==1)
-					return 1;
-
+			get_fds(tmp_command->redir_in_out, &infile, &outfile);
+			if (!ft_strcmp(tmp_command->cmd, "exit"))
+				printf("exit\n");
 			g_data.status_code = execute_bultin(tmp_command, outfile);
 			return (g_data.status_code);
 		}
@@ -110,28 +108,26 @@ void	executer(t_list *commands)
 	t_command	*tmp_command;
 	int			pid;
 	int			last_fd;
+	int			tmp_write_pipe;
 
 	tmp = commands;
 	i = 0;
 	last_fd = STDIN_FILENO;
-	if (run_builtins(tmp) >=0)
+	if (run_builtins(tmp) >= 0)
 		return ;
-
 	while (tmp)
 	{
 		tmp_command = (t_command *)tmp->content;
 		if (pipe(fds) == -1)
 			print_cmd_error(tmp_command->cmd, tmp_command->args[1],
-					strerror(errno), 1);
+				strerror(errno), 1);
 		pid = fork();
 		if (!pid)
 		{
-			//signals_for_child();
-			if (get_inputfile_fd(&last_fd, tmp_command->redir_in) == 1)
-				exit(g_data.status_code);
-			if (get_outfile_fd(&fds[1], tmp_command->redir_out) == 1)
-				exit(g_data.status_code);
-			duplicate_fds(tmp, last_fd, fds);
+			tmp_write_pipe = fds[1];
+			signals_for_child();
+			get_fds(tmp_command->redir_in_out, &last_fd, &fds[1]);
+			duplicate_fds(tmp, last_fd, fds, tmp_write_pipe);
 			execute_command(tmp_command, get_my_path(tmp_command));
 			exit(g_data.status_code);
 		}

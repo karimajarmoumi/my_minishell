@@ -17,11 +17,18 @@ void	init_envs(char **envs)
 	char	*key;
 	char	*value;
 	int		pos;
+	char	buff[1024];
 
 	i = 0;
+	if (!*envs)
+	{
+		add_node(&(g_data.env_vars), "SHLVL", "1", NULL);
+		add_node(&(g_data.env_vars), "PWD", getcwd(buff, sizeof(buff)), NULL);
+		add_node(&(g_data.env_vars), "_", "/usr/bin/env", NULL);
+	}
 	while (envs[i])
 	{
-		pos = find_egal_position(envs[i], '=');
+		pos = searching_for_char(envs[i], '=');
 		key = ft_substr(envs[i], 0, pos);
 		value = ft_substr(envs[i], pos + 1, ft_strlen(envs[i]));
 		add_node(&(g_data.env_vars), key, value, NULL);

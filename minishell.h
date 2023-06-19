@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 10:31:33 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/16 19:33:32 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/19 01:07:53 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@
 # include "parser/lexer.h"
 # include "parser/token.h"
 
+
+
 typedef struct t_list
 {
 	void			*content;
@@ -49,6 +51,7 @@ typedef struct t_red
 {
 	void			*file_name;
 	int				flag;
+	int				fd_herdoc;
 }					t_red;
 
 typedef struct s_command
@@ -56,9 +59,7 @@ typedef struct s_command
 	char			*cmd;
 	char			**args;
 	int				flg;
-	t_list			*redir_in;
-	t_list			*redir_out;
-
+	t_list			*redir_in_out;
 }					t_command;
 
 typedef struct s_node
@@ -84,7 +85,7 @@ typedef struct s_data
 t_data				g_data;
 
 t_command			*read_cmds(t_command *data, char **av, int ac);
-int					ft_lstsize_token(token_t *lst);
+int					ft_lstsize_token(t_token *lst);
 char				*ft_substr(char const *s, unsigned int start, size_t len);
 size_t				ft_strlen(const char *str);
 char				*ft_strdup(const char *s1);
@@ -105,16 +106,17 @@ void				free_double_ptr(char **ptr);
 void				initilizer(char **envs);
 void				init_envs(char **envs);
 int					ft_env(int fd);
-int					find_egal_position(char *str, char c);
+int					searching_for_char(char *str, char c);
 void				add_node(t_node **head, char *key, char *value,
 						t_node *parent);
 void				inorder_traversal(t_node *head, int fd);
 void				remove_node(t_node **head, char *key);
 void				free_node(t_node **node);
 void				ft_free(void *ptr);
+// void				ft_free_test(void **ptr);
 int					ft_pwd(char *cmd, int fd);
 int					ft_cd(t_command *command);
-int					ft_echo(t_command *command);
+int					ft_echo(t_command *command, int fd);
 int					ft_export(t_command *command, int fd);
 int					ft_unset(t_command *command);
 int					is_bultin(char *cmd);
@@ -131,46 +133,50 @@ void				signals_for_child(void);
 void				signals_for_parent(void);
 t_node				*get_most_left(t_node *node);
 char				*ft_strchr(const char *s, int c);
-t_command			*store_one_command(token_t **token);
+t_command			*store_one_command(t_token **token);
 char				**convert_tree_to_array(void);
-token_t				*cmd_args_file(token_t *token_cmd, char **symb_file);
-t_command *insert_one_cmd(char **cmd_args, char *symb_file);
+t_token 				*cmd_args_file(t_token *token_cmd, char **symb_file);
+t_command			*insert_one_cmd(char **cmd_args, char *symb_file);
 t_red				*init_red(int flg);
-token_t				*tokens_of_one_command(token_t **token);
-char				*tokens_cmd_to_string(token_t *token);
+t_token 			*tokens_of_one_command(t_token **token);
+char				*tokens_cmd_to_string(t_token *token);
 
 void				ft_bzero(void *s, size_t n);
 char				*ft_strchr(const char *s, int c);
-t_list				*parser(char *line, int *flg_err);
-t_command			*store_one_command(token_t **token);
+t_list				*parser(char *line);
+t_command			*store_one_command(t_token **token);
 char				**convert_tree_to_array(void);
-int					get_inputfile_fd(int *last_fd, t_list *redir_in);
-int					get_outfile_fd(int *fd, t_list *file_list);
-void				duplicate_fds(t_list *tmp, int last_fd, int *fds);
+int					get_inputfile_fd(t_list *lst_redir, int *last_fd);
+int					get_outfile_fd(t_list *lst_redir, int *fd);
+void				duplicate_fds(t_list *tmp, int last_fd, int *fds,
+						int tmp_fds);
 size_t				ft_strlcpy(char *dst, const char *src, size_t dstsize);
 void				exec_herdoc(char *del, int fd);
 void				herdoc(t_list *command_lst);
-token_t				*ft_lstlast_token(token_t *lst);
-void				ft_lstadd_back_token(token_t **lst, token_t *new);
-token_t			 	*tokens_of_one_command(token_t **token);
-char				*tokens_cmd_to_string(token_t *token);
-int					number_of_tokens_before_pipe(token_t *token);
-token_t				*copy_of_list(token_t *original, int size);
+void				ft_lstadd_back_token(t_token **lst, t_token *new);
+t_token 				*tokens_of_one_command(t_token **token);
+char				*tokens_cmd_to_string(t_token *token);
+int					number_of_tokens_before_pipe(t_token *token);
+t_token 				*copy_of_list(t_token *original, int size);
 void				expand(char **token);
 void				exec_herdoc(char *del, int fd);
 void				herdoc(t_list *command_lst);
-void				check_parsing_error(token_t *tokens, int *flg_err);
-int					redir_out_error(token_t *token);
-int					redir_error(token_t *token, int type);
-int					redir_in_error(token_t *token);
-int					qoute_error(token_t *token);
-int					pipe_error(token_t *tokens, token_t *prev);
+void				check_parsing_error(t_token *tokens, int *flg_err);
+int					redir_out_error(t_token *token);
+int					redir_error(t_token *token, int type);
+int					redir_in_error(t_token *token);
+int					qoute_error(t_token *token);
+int					pipe_error(t_token *tokens, t_token *prev);
 int					ft_isdigit(int c);
 int					ft_isalpha(int c);
-int ft_strcmp(char *s1,char *s2);
-char **copy_of_tab(char **str);
+int					ft_strcmp(char *s1, char *s2);
+char				**copy_of_tab(char **str);
 int					ft_isalnum(int c);
-
-
-
+void				free_red(t_list *redir_list);
+void				free_commands(t_list *commands);
+void				get_fds(t_list *lst_files, int *read_fd, int *write_fd);
+void my_free(char *value,char *key);
+void	init_value(int *pos, int *flag, int *i, int *status);
+int	check_err(char *key, char *cmd, int *i);
+// t_token	*ft_lstlast_token(t_token *lst);
 #endif

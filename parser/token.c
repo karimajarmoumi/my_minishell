@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 18:37:52 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/16 14:35:12 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/19 02:31:19 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,11 @@
 #include "token.h"
 #include "../minishell.h"
 
-token_t	*init_token(char *value, int type)
+t_token 	*init_token(char *value, int type)
 {
-	token_t *token;
-	token = calloc(1, sizeof(token_t));
-	token->value = malloc(sizeof(ft_strlen(value)));
-	token->value = value;
+	t_token *token;
+	token = malloc(sizeof(t_token));
+	token->value = ft_strdup(value);
 	token->type = type;
 	return (token);
 }
@@ -34,10 +33,10 @@ char *char_to_string(char c)
 	return (str);
 }
 
-token_t *get_one_token(lexer_t *lexer, char *types)
+t_token *get_one_token(t_lexer *lexer, char *types)
 {
 	char	qoute;
-	token_t *token;
+	t_token *token;
 	char	*buffer;
 	char	*c_string;
 
@@ -99,10 +98,10 @@ token_t *get_one_token(lexer_t *lexer, char *types)
 }
 
 
-token_t *get_all_tokens(lexer_t *lexer, char *types)
+t_token *get_all_tokens(t_lexer *lexer, char *types)
 {
-	token_t *token;
-	token_t *head;
+	t_token *token;
+	t_token *head;
 
 	token = NULL;
 	head = NULL;

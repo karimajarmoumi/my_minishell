@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
 int	get_old_position(char **arg, char *cmd)
 {
 	char	*prev;

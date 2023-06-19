@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 17:11:33 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/05/30 17:21:32 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/19 01:01:40 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,3 +23,5 @@ t_list	*ft_lstnew(void *content)
 	elem->next = NULL;
 	return (elem);
 }
+
+

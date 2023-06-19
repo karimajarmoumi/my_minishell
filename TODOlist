@@ -65,15 +65,22 @@ cat | cat | cat | cat | cat | ls
 "ls -la"
 export _i oo.9=o
 
-
-
-
 -------------segflt-------------------
-
-
 add _ on is_alnum
 
 --------kawtar errors---------
 bash: export: `34567': not a valid identifier
 cat | cat | cat |ls
+env -i ./minishell
+echo $USER$var\$USER$USER\$USERtest$USER
+unset HOME; cd ///// export HOME= ; cd!!!!!!
+$
+export "test=ici"=coucou ; echo $test !!! the problem in side of karima //after qoutes
+
+-----new_errors
+export var=te"
+echo >
+ echo $USER$var\$USER$USER\$USERtest$USER
+ export "test=ici"=coucou ; echo $test
+
 

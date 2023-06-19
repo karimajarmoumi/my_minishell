@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
 int	is_bultin(char *cmd)
 {
 	if (!ft_strcmp(cmd, "pwd"))
@@ -29,14 +30,13 @@ int	is_bultin(char *cmd)
 		return (0);
 	return (1);
 }
-// TO DO error in len of commands
+
 int	execute_bultin(t_command *command, int outfile)
 {
-
 	if (!ft_strcmp(command->cmd, "env"))
 		return (ft_env(outfile));
 	else if (!ft_strcmp(command->cmd, "echo"))
-		return (ft_echo(command));
+		return (ft_echo(command, outfile));
 	else if (!ft_strcmp(command->cmd, "unset"))
 		return (ft_unset(command));
 	else if (!ft_strcmp(command->cmd, "export"))
@@ -55,14 +55,13 @@ int	is_valid_key(char *key)
 	int	i;
 
 	i = 0;
-	while ( key && key[i])
+	while (key && key[i])
 	{
 		if (key[i] == '.')
 			return (-1);
 		i++;
 	}
-
-	if (key[0] == '_' || key[0]=='$')
+	if (key[0] == '_' || key[0] == '$')
 		return (0);
 	if ((key[0] >= 'a' && key[0] <= 'z') || (key[0] >= 'A' && key[0] <= 'Z'))
 		return (0);
@@ -85,4 +84,3 @@ int	is_num(char *str)
 	}
 	return (i);
 }
-

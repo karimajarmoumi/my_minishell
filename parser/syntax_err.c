@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 12:28:31 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/10 12:30:44 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/18 18:10:42 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "token.h"
 #include "../minishell.h"
 
-int pipe_error(token_t *tokens, token_t *prev)
+int pipe_error(t_token *tokens, t_token *prev)
 {
 	char	*buffer;
 
@@ -49,7 +49,7 @@ int pipe_error(token_t *tokens, token_t *prev)
 	return (0);
 }
 
-int qoute_error(token_t *token)
+int qoute_error(t_token *token)
 {
 	if (token)
 	{
@@ -67,7 +67,7 @@ int qoute_error(token_t *token)
 	return (0);
 }
 
-int redir_in_error(token_t *token)
+int redir_in_error(t_token *token)
 {
 	int		i;
 	int		flag;
@@ -111,7 +111,7 @@ int redir_in_error(token_t *token)
 	return (0);
 }
 
-int redir_out_error(token_t *token)
+int redir_out_error(t_token *token)
 {
 	int		i;
 	char	*buffer;
@@ -159,7 +159,7 @@ int redir_out_error(token_t *token)
 	return (0);
 }
 
-int redir_error(token_t *token, int type)
+int redir_error(t_token *token, int type)
 {
 	if (token)
 	{
@@ -171,9 +171,9 @@ int redir_error(token_t *token, int type)
 	return (0);
 }
 
-void check_parsing_error(token_t *tokens, int *flg_err)
+void check_parsing_error(t_token *tokens, int *flg_err)
 {
-	token_t *prev;
+	t_token *prev;
 
 	prev = NULL;
 	if (tokens)
@@ -191,6 +191,7 @@ void check_parsing_error(token_t *tokens, int *flg_err)
 			else if (tokens->value[0] == '<')
 			{
 				*flg_err = redir_error(tokens , 0);
+
 				if (*flg_err)
 					break;
 			}
