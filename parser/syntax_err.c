@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 12:28:31 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/18 18:10:42 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/21 03:12:10 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 int pipe_error(t_token *tokens, t_token *prev)
 {
 	char	*buffer;
+	char	*to_free;
 
-	buffer = NULL;
 	if (tokens)
 	{
 		tokens = tokens->next;
@@ -28,11 +28,16 @@ int pipe_error(t_token *tokens, t_token *prev)
 			buffer =  ft_strdup("syntax error near unexpected token `|");
 			if (tokens && tokens->value[0] == '|')
 			{
+				to_free =buffer;
 				buffer = ft_strjoin(buffer, "|");
+				function_free((void**)&to_free, 1);
 				tokens = tokens->next;
 			}
+			to_free =buffer;
 			buffer = ft_strjoin(buffer, "'");
+			function_free((void**)&to_free, 1);
 			print_cmd_error(NULL, NULL, buffer, 258);
+			function_free((void**)&buffer, 1);
 			return (1);
 		}
 		else
@@ -41,7 +46,7 @@ int pipe_error(t_token *tokens, t_token *prev)
 				tokens = tokens->next;
 			if (!tokens || (tokens && tokens->type == 2))
 			{
-				print_cmd_error(NULL, NULL, ft_strdup("syntax error near unexpected token `|'"), 258);
+				print_cmd_error(NULL, NULL, "syntax error near unexpected token `|'", 258);
 				return (1);
 			}
 		}
@@ -72,10 +77,10 @@ int redir_in_error(t_token *token)
 	int		i;
 	int		flag;
 	char	*buffer;
+	char	*to_free;
 
 	i = 0;
 	flag = -1;
-	buffer = ft_strdup("");
 	if (token)
 	{
 		token = token->next;
@@ -95,15 +100,23 @@ int redir_in_error(t_token *token)
 		}
 		else if (token->type == 0 || token->type == 1 || token->type == 2)
 		{
-			buffer = "syntax error near unexpected token `";
+			buffer = ft_strdup("syntax error near unexpected token `");
 			while (token && ((token->type == 0 && i < 3) || (token->type == 1 && i < 2)))
 			{
+				to_free = buffer;
 				buffer = ft_strjoin(buffer, token->value);
+				function_free((void**)&to_free, 1);
 				token = token->next;
 				i++;
 			}
+
+			//////while(1);
 			if (token && token->type == 2)
+			{
+				to_free = buffer;
 				buffer = ft_strjoin(buffer, token->value);
+				function_free((void**)&to_free, 1);
+			}
 			print_cmd_error(NULL, NULL, ft_strjoin(buffer, "'"), 258);
 			return (1);
 		}
@@ -115,9 +128,9 @@ int redir_out_error(t_token *token)
 {
 	int		i;
 	char	*buffer;
+	char	*to_free;
 
 	i = 0;
-	buffer = ft_strdup("");
 	if (token)
 	{
 		token = token->next;
@@ -139,15 +152,21 @@ int redir_out_error(t_token *token)
 			token = token->next;
 		if (token && (token->type == 0 || token->type == 1 || token->type == 2))
 		{
-			buffer = "syntax error near unexpected token `";
+			buffer = ft_strdup("syntax error near unexpected token `");
 			while (token && ((i < 2 && (token->type == 2 || token->type == 1))
 				|| (i < 3 && token->type == 0)))
 			{
+				to_free = buffer;
 				buffer = ft_strjoin(buffer, token->value);
+				function_free((void**)&to_free, 1);
 				token = token->next;
 				i++;
 			}
-			print_cmd_error(NULL, NULL, ft_strjoin(buffer, "'"), 258);
+			to_free = buffer;
+			buffer=ft_strjoin(buffer, "'");
+			print_cmd_error(NULL, NULL, buffer, 258);
+			function_free((void**)&to_free, 1);
+			function_free((void**)&buffer, 1);
 			return (1);
 		}
 		if (!token)
@@ -178,7 +197,7 @@ void check_parsing_error(t_token *tokens, int *flg_err)
 	prev = NULL;
 	if (tokens)
 	{
-		while (tokens)
+		while (tokens )
 		{
 			if (tokens->type == 3)
 				prev = tokens;
@@ -201,17 +220,14 @@ void check_parsing_error(t_token *tokens, int *flg_err)
 				if (*flg_err)
 					break;
 			}
-			else if (tokens->type == 5 || tokens->type == 6)
+			else
+			 if (tokens->type == 5 || tokens->type == 6)
 			{
 				*flg_err = qoute_error(tokens);
 				if (*flg_err)
 					break;
 			}
-			//------ todo--------------------------
-			// else if (tokens->type == 7)
-			// {
 
-			// }
 			tokens = tokens->next;
 		}
 

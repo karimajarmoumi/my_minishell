@@ -43,8 +43,8 @@ void	remove_node(t_node **head, char *key)
 	if (!head)
 		return ;
 	to_delete_node = get_node(*head, key);
-	if (!to_delete_node || (to_delete_node->key && !ft_strncmp(to_delete_node->key,
-				"?",1)))
+	if (!to_delete_node || (to_delete_node->key
+			&& !ft_strncmp(to_delete_node->key, "?", 1)))
 		return ;
 	if (to_delete_node->right == NULL && to_delete_node->left == NULL)
 	{
@@ -72,3 +72,4 @@ void	remove_node(t_node **head, char *key)
 	free_node(&to_delete_node);
 	g_data.count_envs--;
 }
+//free

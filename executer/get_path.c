@@ -52,25 +52,23 @@ char	*get_actual_path(char *cmd)
 	int	status;
 
 	status = 127;
-	if (ft_strchr(cmd, '/') && access(cmd, F_OK))
+	if( ft_strchr(cmd, '/') )
 	{
+		if(!access(cmd, F_OK))
+		{
+
+			if (opendir(cmd))
+			{
+				print_cmd_error(cmd, NULL, "is a directory", 126);
+				exit(126);
+			}
+			if (!access(cmd, X_OK))
+				return ft_strdup(cmd);
+			status=126;
+		}
 		print_cmd_error(cmd, NULL, strerror(errno), status);
 		exit(status);
-	}
-	if (!access(cmd, F_OK))
-	{
-		if (opendir(cmd))
-		{
-			print_cmd_error(cmd, NULL, "is a directory", 126);
-			exit(126);
-		}
-		if (!access(cmd, X_OK))
-			return (ft_strdup(cmd));
-		else if (!access(cmd, X_OK))
-		{
-			print_cmd_error(cmd, NULL, strerror(errno), 1);
-			exit(1);
-		}
+
 	}
 	return (get_right_path(cmd));
 }

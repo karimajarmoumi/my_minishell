@@ -15,50 +15,53 @@
 int	get_old_position(char **arg, char *cmd)
 {
 	char	*prev;
-
+	char	*tmp;
 	prev = get_env("OLDPWD");
 	if (!prev)
 		return (print_cmd_error(cmd, NULL, "OLDPWD not set", 1));
-	*arg = prev;
+	tmp=*arg;
+	*arg = ft_strdup(prev);
+	ft_free(tmp);
 	printf("%s\n", *arg);
 	return (0);
 }
-
-int	get_home_positin(char **arg, char *cmd)
+char *	get_home_positin(char *cmd)
 {
 	char	*home;
 
 	home = get_env("HOME");
 	if (!home)
-		return (print_cmd_error(cmd, NULL, "HOME not set", 1));
-	*arg = home;
-	return (0);
+		print_cmd_error(cmd, NULL, "HOME not set", 1);
+	return home;
 }
 
 int	ft_cd(t_command *cmd)
 {
-	char	old_pwd[1024];
-	char	current_pwd[1024];
+	char *old_pwd;
+	char *path;
+	char *home;
 
-	if (cmd->args[1] && cmd->args[1][0] == '~')
-		cmd->args[1] = ft_strjoin(HOME, &cmd->args[1][1]);
-	if (cmd->args[1] && cmd->args[1][0] == '-')
+	path = ft_strdup(cmd->args[1]);
+	if (path && path[0] == '-' && ft_strlen(path)==1)
 	{
-		if (get_old_position(&cmd->args[1], cmd->cmd) == 1)
+		if (get_old_position(&path, cmd->cmd) == 1)
 			return (1);
 	}
-	if (!cmd->args[1])
+	if (!path)
 	{
-		if (get_home_positin(&cmd->args[1], cmd->cmd) == 1)
+		home=get_home_positin(cmd->cmd);
+		if(!home || !home[0])
 			return (1);
+		path=ft_strdup(home);
 	}
-	if (!getcwd(old_pwd, sizeof(old_pwd)))
+	
+	if (chdir(path) != 0)
 		return (print_cmd_error(cmd->cmd, cmd->args[1], strerror(errno), 1));
-	if (chdir(cmd->args[1]) != 0)
-		return (print_cmd_error(cmd->cmd, cmd->args[1], strerror(errno), 1));
-	if (!getcwd(current_pwd, sizeof(current_pwd)))
-		return (print_cmd_error(cmd->cmd, cmd->args[1], strerror(errno), 1));
+	
+	old_pwd=get_env("PWD");
 	add_node(&g_data.env_vars, "OLDPWD", old_pwd, NULL);
-	add_node(&g_data.env_vars, "PWD", current_pwd, NULL);
+	if(old_pwd)
+		add_node(&g_data.env_vars, "PWD", get_working_dir(), NULL);
+	ft_free(path);
 	return (0);
 }

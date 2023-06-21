@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kel-baam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/16 17:27:41 by kel-baam          #+#    #+#             */
-/*   Updated: 2022/10/23 23:06:58 by kel-baam         ###   ########.fr       */
+/*   Updated: 2023/06/20 00:32:40 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../minishell.h"
 
+#include "../minishell.h"
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	int		i;

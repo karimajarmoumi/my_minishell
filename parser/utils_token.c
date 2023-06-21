@@ -1,41 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tree.c                                             :+:      :+:    :+:   */
+/*   utils_token.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/17 11:24:56 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/18 18:20:09 by kjarmoum         ###   ########.fr       */
+/*   Created: 2023/06/20 16:09:38 by kjarmoum          #+#    #+#             */
+/*   Updated: 2023/06/20 16:10:25 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
 #include "cmd.h"
 #include "lexer.h"
 #include "token.h"
+#include "../minishell.h"
 
+char	**token_cmd_to_args(t_token *token_cmd)
+{
+	t_token 	*tmp;
+	int		i;
+	char	**tab;
 
-// int	count_cmds(t_token *token)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (token)
-// 	{
-// 		if (token->value[0] == '|')
-// 			i++;
-// 		token = token->next;
-// 	}
-// 	return (i);
-// }
-
-// t_list	*init_list(t_command *cmd)
-// {
-// 	t_list	*list;
-
-// 	list = malloc(sizeof(t_list));
-// 	list->content = (t_command *)cmd;
-// 	list->next = NULL;
-// 	return (list);
-// }
+	i = 0;
+	tab = malloc(sizeof(char *) * (ft_lstsize_token(token_cmd) + 1));
+	if (token_cmd)
+	{
+		tmp = token_cmd;
+		if (tab)
+		{
+			while (tmp)
+			{
+				if (tmp->type != 4)
+				{
+					tab[i] = ft_strdup(tmp->value);
+					i++;
+				}
+				tmp = tmp->next;
+			}
+			tab[i] = NULL;
+		}
+	}
+	else
+		tab[0] = NULL;
+	return (tab);
+}

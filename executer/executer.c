@@ -15,21 +15,23 @@
 void	execute_command(t_command *tmp_command, char *path)
 {
 	char	**envs;
+	int		status;
 
+	status = 127;
 	if (!is_bultin(tmp_command->cmd))
 	{
-		g_data.status_code = execute_bultin(tmp_command, 1);
+		g_data.status_code = execute_bultin(tmp_command,1);
 		return ;
 	}
 	else
 	{
 		envs = convert_tree_to_array();
 		if (execve(path, tmp_command->args, envs) == -1)
-			exit(127);
+			exit(status);
 	}
 }
 
-void	closing_pipe(t_list *commands, int *fd, int *pidd, int i)
+void	closing_pipe(t_list *commands, int *pidd, int i)
 {
 	int	j;
 	int	status;
@@ -39,8 +41,7 @@ void	closing_pipe(t_list *commands, int *fd, int *pidd, int i)
 	{
 		while (j < i)
 		{
-			close(fd[j]);
-			waitpid(pidd[j], &status, 0);
+			waitpid(pidd[j], &status, 0); 
 			j++;
 		}
 		if (status == SIGINT)
@@ -52,6 +53,7 @@ void	closing_pipe(t_list *commands, int *fd, int *pidd, int i)
 		}
 		else
 			g_data.status_code = WEXITSTATUS(status);
+		g_data.isChild=0;
 	}
 }
 
@@ -67,7 +69,7 @@ char	*get_my_path(t_command *tmp_command)
 		path = get_actual_path(tmp_command->cmd);
 		if (!path)
 			g_data.status_code = print_cmd_error(tmp_command->cmd, NULL,
-					" command not found", 127);
+				" command not found", 127);
 	}
 	return (path);
 }
@@ -88,9 +90,9 @@ int	run_builtins(t_list *commands)
 				|| !ft_strcmp(tmp_command->cmd, "cd")
 				|| !ft_strcmp(tmp_command->cmd, "exit")))
 		{
-			get_fds(tmp_command->redir_in_out, &infile, &outfile);
 			if (!ft_strcmp(tmp_command->cmd, "exit"))
 				printf("exit\n");
+			get_fds(tmp_command->redir_in_out, &infile, &outfile);
 			g_data.status_code = execute_bultin(tmp_command, outfile);
 			return (g_data.status_code);
 		}
@@ -102,7 +104,6 @@ void	executer(t_list *commands)
 {
 	int			fds[2];
 	t_list		*tmp;
-	int			fd[1024];
 	int			pidd[1000];
 	int			i;
 	t_command	*tmp_command;
@@ -115,6 +116,7 @@ void	executer(t_list *commands)
 	last_fd = STDIN_FILENO;
 	if (run_builtins(tmp) >= 0)
 		return ;
+	g_data.isChild=1;
 	while (tmp)
 	{
 		tmp_command = (t_command *)tmp->content;
@@ -122,6 +124,11 @@ void	executer(t_list *commands)
 			print_cmd_error(tmp_command->cmd, tmp_command->args[1],
 				strerror(errno), 1);
 		pid = fork();
+		if (pid == -1)
+		{
+			print_cmd_error(NULL,NULL," fork: Resource temporarily unavailable",1);
+			exit(g_data.status_code);
+		}
 		if (!pid)
 		{
 			tmp_write_pipe = fds[1];
@@ -134,12 +141,14 @@ void	executer(t_list *commands)
 		else
 		{
 			pidd[i] = pid;
-			fd[i] = fds[0];
+			if (last_fd != 0)
+				close(last_fd);
 			last_fd = fds[0];
 			tmp = tmp->next;
 			close(fds[1]);
 			i++;
 		}
 	}
-	closing_pipe(commands, fd, pidd, i);
+	
+	closing_pipe(commands, pidd, i);
 }

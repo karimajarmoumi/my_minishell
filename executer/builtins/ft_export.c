@@ -46,13 +46,18 @@ void	add_new_value(int pos, char *arg, char **value, char **key)
 {
 	char	*new_value;
 	char	*old_value;
+	char 	*tmp;
 
+	tmp = *key;
 	*key = ft_substr(arg, 0, pos - 1);
+	ft_free(tmp);
 	old_value = get_env(*key);
 	new_value = ft_substr(arg, pos + 1, ft_strlen(arg));
 	if (!old_value)
 		old_value = ft_strdup("");
+	tmp = *value;
 	*value = ft_strjoin(old_value, new_value);
+	ft_free(tmp);
 }
 
 void	test(char **arg, int *pos, int *flag, int i)
@@ -77,20 +82,19 @@ int	add_new_element(t_command *cmd)
 		test(cmd->args, &pos, &flag, i);
 		if (pos == -1)
 		{
-			key = cmd->args[i];
+			key = ft_strdup(cmd->args[i]);
 			value = ft_strdup("");
 		}
 		if (!flag && pos > 0)
 			key = ft_substr(cmd->args[i], 0, pos);
 		else
-			key = cmd->args[i];
+			key = ft_strdup(cmd->args[i]);
 		if (pos >= 0)
 			value = ft_substr(cmd->args[i], pos + 1, ft_strlen(cmd->args[i]));
-		if (check_err(key, cmd->cmd, &i) == -1)
-			continue ;
 		if (flag)
 			add_new_value(pos, cmd->args[i], &value, &key);
-		add_node(&(g_data.env_vars), key, value, NULL);
+		if (!check_err_export(cmd->args[i],key, cmd->cmd))
+			add_node(&(g_data.env_vars), key, value, NULL);
 		my_free(value, key);
 	}
 	return (g_data.status_code);

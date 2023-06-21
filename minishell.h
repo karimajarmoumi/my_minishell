@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 10:31:33 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/19 01:07:53 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/20 19:27:53 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ typedef struct s_data
 	t_node			*env_vars;
 	int				status_code;
 	int				count_envs;
+	int				isChild;
+	char            *current_dir;
 	struct termios	new_term;
 	struct termios	old_term;
 
@@ -84,6 +86,7 @@ typedef struct s_data
 
 t_data				g_data;
 
+char				**token_cmd_to_args(t_token *token_cmd);
 t_command			*read_cmds(t_command *data, char **av, int ac);
 int					ft_lstsize_token(t_token *lst);
 char				*ft_substr(char const *s, unsigned int start, size_t len);
@@ -93,7 +96,7 @@ char				**ft_split(char const *s, char c);
 char				*ft_strjoin(char const *s1, char const *s2);
 void				executer(t_list *command);
 t_list				*init_commands(void);
-int					ft_atoi(const char *str);
+int					ft_atoi(const char *str,int *flag);
 t_list				*ft_lstlast(t_list *lst);
 void				ft_lstadd_back(t_list **lst, t_list *new);
 t_list				*ft_lstnew(void *content);
@@ -146,8 +149,10 @@ char				*ft_strchr(const char *s, int c);
 t_list				*parser(char *line);
 t_command			*store_one_command(t_token **token);
 char				**convert_tree_to_array(void);
-int					get_inputfile_fd(t_list *lst_redir, int *last_fd);
-int					get_outfile_fd(t_list *lst_redir, int *fd);
+int					get_inputfile_fd(t_list *lst_redir, int *last_fd,
+						int *tmp_read_fd);
+int					get_outfile_fd(t_list *lst_redir, int *fd,
+						int *tmp_write_fd);
 void				duplicate_fds(t_list *tmp, int last_fd, int *fds,
 						int tmp_fds);
 size_t				ft_strlcpy(char *dst, const char *src, size_t dstsize);
@@ -161,7 +166,7 @@ t_token 				*copy_of_list(t_token *original, int size);
 void				expand(char **token);
 void				exec_herdoc(char *del, int fd);
 void				herdoc(t_list *command_lst);
-void				check_parsing_error(t_token *tokens, int *flg_err);
+void check_parsing_error(t_token *tokens, int *flg_err);
 int					redir_out_error(t_token *token);
 int					redir_error(t_token *token, int type);
 int					redir_in_error(t_token *token);
@@ -175,8 +180,15 @@ int					ft_isalnum(int c);
 void				free_red(t_list *redir_list);
 void				free_commands(t_list *commands);
 void				get_fds(t_list *lst_files, int *read_fd, int *write_fd);
+void				my_free(char *value, char *key);
+void				init_value(int *pos, int *flag, int *i, int *status);
+int					check_err_export(char *arg,char *key, char *cmd);
+char* get_working_dir();
+
 void my_free(char *value,char *key);
 void	init_value(int *pos, int *flag, int *i, int *status);
 int	check_err(char *key, char *cmd, int *i);
+void function_free(void **to_free, int type);
+int	ft_free_test(void **ptr);
 // t_token	*ft_lstlast_token(t_token *lst);
 #endif

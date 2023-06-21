@@ -55,28 +55,39 @@ int	is_valid_key(char *key)
 	int	i;
 
 	i = 0;
+	if(!key[0])
+		return -1;
 	while (key && key[i])
 	{
-		if (key[i] == '.')
-			return (-1);
+		
+		if(i==0)
+		{
+			if(!ft_isalpha(key[i]) && key[i]!= '_')
+				return -1;
+		}
+		else
+			if(!ft_isalnum(key[i])&& key[i]!= '_' )
+				return -1;
 		i++;
 	}
-	if (key[0] == '_' || key[0] == '$')
-		return (0);
-	if ((key[0] >= 'a' && key[0] <= 'z') || (key[0] >= 'A' && key[0] <= 'Z'))
-		return (0);
-	return (-1);
+	return (0);
 }
 
 int	is_num(char *str)
 {
 	int	i;
-
+	int flag=0;
 	i = 0;
+	int test;
+
+	test=ft_atoi(str,&flag);
+	if(flag==1)
+		return -1;
 	if (str[i] == '+' || str[i] == '-')
 		i++;
 	while (str[i])
 	{
+		
 		if ((str[i] >= '0' && str[i] <= '9'))
 			i++;
 		else

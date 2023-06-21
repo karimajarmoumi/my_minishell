@@ -85,7 +85,6 @@ void	free_node(t_node **node)
 	(*node)->value = NULL;
 	(*node)->parent = NULL;
 	(*node)->left = NULL;
-
 	ft_free(*node);
 	*node = NULL;
 }

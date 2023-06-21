@@ -41,7 +41,7 @@ void	free_commands(t_list *commands)
 	{
 		cmd = (t_command *)tmp_commands->content;
 		ft_free(cmd->cmd);
-		// free_double_ptr(cmd->args);
+		free_double_ptr(cmd->args);
 		free_red(cmd->redir_in_out);
 		ft_free(cmd);
 		next = tmp_commands->next;
@@ -49,3 +49,5 @@ void	free_commands(t_list *commands)
 		tmp_commands = next;
 	}
 }
+
+

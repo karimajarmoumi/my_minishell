@@ -26,6 +26,7 @@ void	exec_herdoc(char *del, int fd)
 			line = ft_strdup("");
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
+		ft_free(line);
 	}
 }
 

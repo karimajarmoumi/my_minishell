@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 15:05:08 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/15 18:59:06 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/21 18:23:32 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	ft_echo(t_command *command, int fd)
 	while (command->args[i])
 	{
 		if (i != start)
-			printf(" ");
+			write(fd," ", 1);
 		write(fd, command->args[i], ft_strlen(command->args[i]));
 		i++;
 	}

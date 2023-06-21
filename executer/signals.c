@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 15:57:07 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/18 17:58:44 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/19 21:42:04 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,14 @@
 void	prompt(int sig)
 {
 	(void)sig;
-	// printf("heere\n");
-	// g_data.status_code = 1;
-	// printf("\n");
-	// rl_on_new_line();
-	// rl_replace_line("", 0);
-	// rl_redisplay();
+	g_data.status_code = 1;
+	printf("\n");
+	if (!g_data.isChild)
+	{
+		// rl_on_new_line();
+		//  rl_replace_line("", 0);
+		// rl_redisplay();
+	}
 }
 
 void	signals_for_parent(void)

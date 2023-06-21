@@ -12,14 +12,12 @@
 
 #include "../minishell.h"
 
-int	get_outfile_fd(t_list *lst_redir, int *fd)
+int	get_outfile_fd(t_list *lst_redir, int *fd, int *tmp_write_fd)
 {
 	t_red	*tmp_redir;
-	t_red	*next_node;
+	// t_red	*next_node;
 
 	tmp_redir = (t_red *)(lst_redir->content);
-	if (lst_redir->next)
-		next_node = (t_red *)(lst_redir->next->content);
 	if (tmp_redir->flag == 3)
 	{
 		if (((char *)tmp_redir->file_name)[0] == '$')
@@ -32,20 +30,17 @@ int	get_outfile_fd(t_list *lst_redir, int *fd)
 	if (*fd == -1)
 		return (print_cmd_error(tmp_redir->file_name, NULL, strerror(errno),
 				1));
-	if (lst_redir->next && *(fd) != STDOUT_FILENO && next_node->flag != 0
-		&& next_node->flag != 1)
-		close(*fd);
+	if (*fd != *tmp_write_fd)
+		close(*tmp_write_fd);
 	return (0);
 }
 
-int	get_inputfile_fd(t_list *lst_redir, int *last_fd)
+int	get_inputfile_fd(t_list *lst_redir, int *last_fd, int *tmp_read_fd)
 {
 	t_red	*tmp;
-	t_red	*next_node;
+	// t_red	*next_node;
 
 	tmp = (t_red *)lst_redir->content;
-	if (lst_redir->next)
-		next_node = (t_red *)lst_redir->next->content;
 	if (((char *)tmp->file_name)[0] == '$')
 		return (print_cmd_error(tmp->file_name, NULL, "ambiguous redirect", 1));
 	if (tmp->flag == 1)
@@ -55,9 +50,8 @@ int	get_inputfile_fd(t_list *lst_redir, int *last_fd)
 				strerror(errno), 1));
 	if (!tmp->flag)
 		*last_fd = tmp->fd_herdoc;
-	if (lst_redir->next && *last_fd && next_node->flag != 2
-		&& next_node->flag != 3)
-		close(*last_fd);
+	if (*last_fd != *tmp_read_fd)
+		close(*tmp_read_fd);
 	return (0);
 }
 
@@ -65,20 +59,26 @@ void	get_fds(t_list *lst_files, int *read_fd, int *write_fd)
 {
 	t_list	*tmp_redir;
 	t_red	*tmp;
+	int		tmp_read_fd;
+	int		tmp_write_fd;
 
+	tmp_read_fd = *read_fd;
+	tmp_write_fd = *write_fd;
 	tmp_redir = lst_files;
 	while (tmp_redir)
 	{
 		tmp = (t_red *)tmp_redir->content;
 		if (!tmp->flag || tmp->flag == 1)
 		{
-			if (get_inputfile_fd(tmp_redir, read_fd) == 1)
+			if (get_inputfile_fd(tmp_redir, read_fd, &tmp_read_fd) == 1)
 				exit(g_data.status_code);
+			tmp_read_fd = *read_fd;
 		}
 		if (tmp->flag == 2 || tmp->flag == 3)
 		{
-			if (get_outfile_fd(tmp_redir, write_fd) == 1)
+			if (get_outfile_fd(tmp_redir, write_fd, &tmp_write_fd) == 1)
 				exit(g_data.status_code);
+			tmp_write_fd = *write_fd;
 		}
 		tmp_redir = tmp_redir->next;
 	}
@@ -86,11 +86,7 @@ void	get_fds(t_list *lst_files, int *read_fd, int *write_fd)
 
 void	duplicate_fds(t_list *tmp, int last_fd, int *fds, int tmp_write_pipe)
 {
-	t_command	*tmp_command;
-	t_red		*red;
 
-	tmp_command = (t_command *)tmp->content;
-	red = (t_red *)tmp_command->redir_in_out;
 	if (last_fd != STDIN_FILENO)
 	{
 		dup2(last_fd, STDIN_FILENO);

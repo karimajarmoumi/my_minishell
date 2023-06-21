@@ -11,20 +11,32 @@
 /* ************************************************************************** */
 #include "../../minishell.h"
 
+void	set_status(int status)
+{
+	g_data.status_code = status;
+	add_node(&(g_data.env_vars), "?", ft_itoa(g_data.status_code), NULL);
+}
+
+int	check_err_exit(char *arg, char *cmd)
+{
+	if ((arg && is_num(arg) == -1))
+		return (print_cmd_error(cmd, arg, "numeric argument required", 255));
+	else
+		return (0);
+}
+
 int	ft_exit(t_command *cmd)
 {
 	int				status;
 	int				one_arg;
 	unsigned char	test;
+	int flag;
 
-	status = 127;
+	status = 0;
 	one_arg = 1;
 	if (cmd->args[1])
 	{
-		if ((cmd->args[1] && is_num(cmd->args[1]) == -1)
-			|| ft_atoi(cmd->args[1]) == -1 || ft_atoi(cmd->args[1]) == 0)
-			status = print_cmd_error(cmd->cmd, cmd->args[1],
-				"numeric argument required", 255);
+		status = check_err_exit(cmd->args[1], cmd->cmd);
 		if (cmd->args && cmd->args[2] && !status)
 		{
 			one_arg = 0;
@@ -32,12 +44,11 @@ int	ft_exit(t_command *cmd)
 		}
 		if (cmd->args[1] && is_num(cmd->args[1]) >= 0 && one_arg)
 		{
-			test = (unsigned char)ft_atoi(cmd->args[1]);
+			test = (unsigned char)ft_atoi(cmd->args[1],&flag);
 			status = test;
 		}
 	}
-	g_data.status_code = status;
-	add_node(&(g_data.env_vars), "?", ft_itoa(g_data.status_code), NULL);
+	set_status(status);
 	if (one_arg)
 		exit(g_data.status_code);
 	return (status);

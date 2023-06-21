@@ -21,7 +21,7 @@ typedef struct s_token
 	enum
 	{
 		red_input,     // 0
-		red_output,    // 1
+		red_output,    // 1 
 		token_pipe,    // 2
 		token_text,    // 3
 		token_space,   // 4

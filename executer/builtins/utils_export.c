@@ -12,13 +12,12 @@
 
 #include "../../minishell.h"
 
-int	check_err(char *key, char *cmd, int *i)
+int	check_err_export(char *arg,char *key, char *cmd)
 {
 	if (is_valid_key(key) == -1)
 	{
-		g_data.status_code = print_cmd_error(cmd, key, "not a valid identifier",
-            1);
-		(*i)++;
+		g_data.status_code = print_cmd_error(cmd, arg, "not a valid identifier",
+				1);
 		return (-1);
 	}
 	return (0);

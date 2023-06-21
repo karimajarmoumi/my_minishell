@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 15:09:24 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/19 01:11:45 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/20 22:33:27 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,18 @@
 #include "token.h"
 
 
+t_token	*ft_lstlast_token(t_token *lst)
+{
+	if (!lst)
+		return (NULL);
+	while (lst->next)
+		lst = lst->next;
+	return (lst);
+}
+
 void	ft_lstadd_back_token(t_token **lst, t_token *new)
 {
 	t_token 	*last_node;
-
 	if (lst)
 	{
 		if (!*lst)
@@ -32,20 +40,20 @@ void	ft_lstadd_back_token(t_token **lst, t_token *new)
 	}
 }
 
-t_token 	*copy_of_list(t_token *original, int size)
+t_token 	*copy_of_list(t_token *org, int size)
 {
-	int		i;
+	int			i;
 	t_token 	*copy;
-
-	i = 0;
+	//leak!!1
 	copy = NULL;
-	if (original)
+	if (org)
 	{
-		while (original && i < size)
+		i = 0;
+		while (org && i < size)
 		{
-			ft_lstadd_back_token(&copy, init_token(original->value,
-					original->type));
-			original = original->next;
+			ft_lstadd_back_token(&copy, init_token(org->value,
+					org->type));
+			org = org->next;
 			i++;
 		}
 	}
@@ -70,8 +78,8 @@ int	number_of_tokens_before_pipe(t_token *token)
 
 t_token 	*tokens_of_one_command(t_token **token)
 {
-	int		i;
-	int		count_token;
+	int			i;
+	int			count_token;
 	t_token 	*tokens_cmd;
 
 	i = 0;
@@ -92,16 +100,19 @@ t_token 	*tokens_of_one_command(t_token **token)
 char	*tokens_cmd_to_string(t_token *token)
 {
 	char *buffer;
+	char *to_free;
 
 	buffer = ft_strdup("");
 	if (token)
 	{
 		while (token)
 		{
+			to_free = buffer;
 			buffer = ft_strjoin(buffer, token->value);
+			function_free((void**)&to_free, 2);
 			token = token->next;
 		}
-		buffer = ft_strjoin(buffer, "\0");
+		return (ft_strjoin(buffer, "\0"));
 	}
-	return (buffer);
+	return (NULL);
 }

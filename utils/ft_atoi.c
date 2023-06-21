@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	ft_atoi(const char *str)
+int	ft_atoi(const char *str,int *flag)
 {
 	int				i;
 	int				sign;
@@ -34,9 +34,9 @@ int	ft_atoi(const char *str)
 		result = result * 10 + (str[i] - '0');
 		i++;
 		if (result > 9223372036854775807 && sign == -1)
-			return (0);
+			*flag=1;
 		if (result > 9223372036854775807 && sign == 1)
-			return (-1);
+			*flag=1;
 	}
 	return (result * sign);
 }
