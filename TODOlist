@@ -83,14 +83,13 @@ echo >
  echo $USER$var\$USER$USER\$USERtest$USER
  export "test=ici"=coucou ; echo $test
 export ap+=l
+
 <<<<<<< HEAD
 
+----------segflt-----
+ls > $dfghjkl
 
- // 39 ls > out
- // 24 ls -la
- // 13 ls
+
+echo "jsksksk"jsjsj"ksks"
 =======
-$ alone
-export " " karima
-ls " " seg
->>>>>>> de60409d0de3d02e7818cba3f759123a204e0d85
+>>>>>>> 454cca5fd7920440225f7c91e0513538f1bcb05b

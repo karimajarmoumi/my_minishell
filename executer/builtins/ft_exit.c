@@ -30,7 +30,7 @@ int	ft_exit(t_command *cmd)
 	int				status;
 	int				one_arg;
 	unsigned char	test;
-	int flag;
+	int				flag;
 
 	status = 0;
 	one_arg = 1;
@@ -44,7 +44,7 @@ int	ft_exit(t_command *cmd)
 		}
 		if (cmd->args[1] && is_num(cmd->args[1]) >= 0 && one_arg)
 		{
-			test = (unsigned char)ft_atoi(cmd->args[1],&flag);
+			test = (unsigned char)ft_atoi(cmd->args[1], &flag);
 			status = test;
 		}
 	}

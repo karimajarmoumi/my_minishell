@@ -49,5 +49,3 @@ void	free_commands(t_list *commands)
 		tmp_commands = next;
 	}
 }
-
-

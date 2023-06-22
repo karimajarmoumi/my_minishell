@@ -15,7 +15,6 @@
 int	get_outfile_fd(t_list *lst_redir, int *fd, int *tmp_write_fd)
 {
 	t_red	*tmp_redir;
-	// t_red	*next_node;
 
 	tmp_redir = (t_red *)(lst_redir->content);
 	if (tmp_redir->flag == 3)
@@ -38,7 +37,6 @@ int	get_outfile_fd(t_list *lst_redir, int *fd, int *tmp_write_fd)
 int	get_inputfile_fd(t_list *lst_redir, int *last_fd, int *tmp_read_fd)
 {
 	t_red	*tmp;
-	// t_red	*next_node;
 
 	tmp = (t_red *)lst_redir->content;
 	if (((char *)tmp->file_name)[0] == '$')
@@ -84,15 +82,14 @@ void	get_fds(t_list *lst_files, int *read_fd, int *write_fd)
 	}
 }
 
-void	duplicate_fds(t_list *tmp, int last_fd, int *fds, int tmp_write_pipe)
+void	duplicate_fds(t_list *tmp, int last_fd, int *fds, int out_pipe_fd)
 {
-
 	if (last_fd != STDIN_FILENO)
 	{
 		dup2(last_fd, STDIN_FILENO);
 		close(last_fd);
 	}
-	if (tmp->next || (fds[1] != STDOUT_FILENO && fds[1] != tmp_write_pipe))
+	if (tmp->next || (fds[1] != STDOUT_FILENO && fds[1] != out_pipe_fd))
 	{
 		dup2(fds[1], STDOUT_FILENO);
 		close(fds[1]);

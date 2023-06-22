@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-int	check_err_export(char *arg,char *key, char *cmd)
+int	check_err_export(char *arg, char *key, char *cmd)
 {
 	if (is_valid_key(key) == -1)
 	{

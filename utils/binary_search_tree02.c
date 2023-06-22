@@ -72,4 +72,16 @@ void	remove_node(t_node **head, char *key)
 	free_node(&to_delete_node);
 	g_data.count_envs--;
 }
-//free
+
+char	**convert_tree_to_array(void)
+{
+	int		p;
+	char	**envs;
+	char	**store;
+
+	p = 0;
+	envs = malloc(sizeof(char *) * (g_data.count_envs + 1));
+	store = store_envs(g_data.env_vars, envs, &p);
+	envs[p] = NULL;
+	return (envs);
+}

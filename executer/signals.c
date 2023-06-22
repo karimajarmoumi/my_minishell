@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 15:57:07 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/19 21:42:04 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/22 15:29:04 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ void	prompt(int sig)
 	printf("\n");
 	if (!g_data.isChild)
 	{
-		// rl_on_new_line();
-		//  rl_replace_line("", 0);
-		// rl_redisplay();
+		rl_on_new_line();
+		// rl_replace_line("", 0);
+		rl_redisplay();
 	}
 }
 

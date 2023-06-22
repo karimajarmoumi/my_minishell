@@ -6,11 +6,10 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 16:27:09 by kel-baam          #+#    #+#             */
-/*   Updated: 2023/06/16 19:02:00 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/22 15:14:56 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// final version
 #include "../../minishell.h"
 
 void	inorder_traversal(t_node *head, int fd)
@@ -60,7 +59,7 @@ void	add_new_value(int pos, char *arg, char **value, char **key)
 	ft_free(tmp);
 }
 
-void	test(char **arg, int *pos, int *flag, int i)
+void	check_egal_pos(char **arg, int *pos, int *flag, int i)
 {
 	*pos = searching_for_char(arg[i], '=');
 	if (arg[i] && *pos > 0 && arg[i][*pos - 1] == '+')
@@ -79,7 +78,7 @@ int	add_new_element(t_command *cmd)
 	init_value(&pos, &flag, &i, &g_data.status_code);
 	while (cmd->args && cmd->args[++i])
 	{
-		test(cmd->args, &pos, &flag, i);
+		check_egal_pos(cmd->args, &pos, &flag, i);
 		if (pos == -1)
 		{
 			key = ft_strdup(cmd->args[i]);

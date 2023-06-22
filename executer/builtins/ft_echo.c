@@ -51,7 +51,7 @@ int	ft_echo(t_command *command, int fd)
 	while (command->args[i])
 	{
 		if (i != start)
-			write(fd," ", 1);
+			write(fd, " ", 1);
 		write(fd, command->args[i], ft_strlen(command->args[i]));
 		i++;
 	}
