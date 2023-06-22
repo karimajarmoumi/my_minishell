@@ -6,7 +6,7 @@
 /*   By: kjarmoum <kjarmoum@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 23:26:25 by kjarmoum          #+#    #+#             */
-/*   Updated: 2023/06/22 23:07:20 by kjarmoum         ###   ########.fr       */
+/*   Updated: 2023/06/22 23:12:22 by kjarmoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ t_list	*parser(char *line)
 	t_token	*token;
 
 	flg_err = 0;
-	while(1);
 	lexer = init_lexer(line);
 	symb = ft_strdup("<>");
 	token = get_all_tokens(lexer);
